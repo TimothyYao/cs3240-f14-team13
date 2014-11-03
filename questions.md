@@ -2,6 +2,8 @@
 a. What kind of interface does the customer want? Should we create an app? Web page? Web form?  
 ##Encryption
 a. How secure should the encryption be?  
+b. Is there any encryption associated with the individual bulletin board?
+c. Do we have a policy on maintaining security of user connections?
 ##Author
 a. Should files uploaded by authors be scanned for malicious programs?  
 b. Are authors allowed to even upload executable files?  
