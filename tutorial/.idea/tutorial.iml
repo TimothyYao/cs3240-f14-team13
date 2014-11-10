@@ -4,21 +4,21 @@
     <facet type="django" name="Django">
       <configuration>
         <option name="rootFolder" value="$MODULE_DIR$" />
-        <option name="settingsModule" value="Django_Tut/settings.py" />
+        <option name="settingsModule" value="tutorial/settings.py" />
         <option name="manageScript" value="manage.py" />
       </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$" />
-    <orderEntry type="jdk" jdkName="Python 2.7.8 (C:\Python27\python.exe)" jdkType="Python SDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
     <option name="TEMPLATE_FOLDERS">
       <list>
-        <option value="D:\Data\pycharm django tut\Django_Tut\templates" />
+        <option value="C:\Users\Timothy\Documents\School\UVA\2nd Year\3rd Semester\CS 3240\Project\cs3240-f14-team13\tutorial\templates" />
       </list>
     </option>
   </component>
