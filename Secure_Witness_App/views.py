@@ -16,14 +16,14 @@ from django.core.context_processors import csrf
 
 
 @login_required
-def home (request):  #takes no arguements. . .
+def home (request):
 
 
     user = request.user
 
 
     t = loader.get_template('home.html')
-    c = Context({  #does context take in like a dictionary of random objects? ..
+    c = Context({
         'thing1': 'silly string', 'user': user,
     })
     return HttpResponse(t.render(c))
@@ -34,7 +34,7 @@ def home (request):  #takes no arguements. . .
 @login_required
 def bulletin_form (request):  #takes no arguements. . .
 
-#Do I still have the username from request here?  Or is it lost. . .
+
     user = request.user
 
 
@@ -46,9 +46,9 @@ def bulletin_form (request):  #takes no arguements. . .
 
 
 
-def secureWitness (request):  #takes no arguements. . .
+def secureWitness (request):
 
-#Do I still have the username from request here?  Or is it lost. . .
+
     user = request.user
 
 
@@ -62,12 +62,8 @@ def secureWitness (request):  #takes no arguements. . .
 
 
 
-def register_account (request):  #takes no arguements. . .
+def register_account (request):
 
-#Do I still have the username from request here?  Or is it lost. . .
-
-    # c = {}
-    # c.update(csrf(request))
 
     if request.method == 'POST':
         print "there was a POST request. . ."
@@ -86,26 +82,16 @@ def register_account (request):  #takes no arguements. . .
 
 
 
-        # create a form instance and populate it with data from the request:
-            #form = NewAccountForm(request.POST)
-        # check whether it's valid:
-            #if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-                #print "testing print"
-                #print form.cleaned_data['register']  # lets see what we got here?
-
 
 
         return HttpResponseRedirect('/home/') #TODO maybe display a temp "success" page and redirect 5 sec
 
-    # if a GET (or any other method) we'll create a blank form
+
     else:
-    # form = NameForm()
+
     # //TODO else what??
         print 'else what? . . .' #
-        #NewAccountForm()
+
     user = request.user
 
 
