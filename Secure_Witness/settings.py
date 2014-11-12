@@ -1,5 +1,5 @@
 """
-Django settings for Django_Tut project.
+Django settings for Secure_Witness project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.7/topics/settings/
@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'jskw_le@(-uhktpgm*pb2%s8n5s8c@@o7%hj@91*^a$^938xmg'
+SECRET_KEY = 't0%e!p80!rk6jh+efm7p1*c3l-g3+($mal_e7g)0u1ylmpg)-b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -27,6 +27,7 @@ TEMPLATE_DEBUG = True
 #override default login url, which was /accounts/login
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+
 
 ALLOWED_HOSTS = []
 
@@ -40,7 +41,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'polls',
+    'Secure_Witness_App',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -53,13 +54,20 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'Django_Tut.urls'
+ROOT_URLCONF = 'Secure_Witness.urls'
 
-WSGI_APPLICATION = 'Django_Tut.wsgi.application'
+WSGI_APPLICATION = 'Secure_Witness.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }     WAS . . .  ^^^
 
 DATABASES = {
     'default': {
@@ -91,10 +99,3 @@ STATIC_URL = '/static/'
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),
 )
-
-
-
-
-# use CTLR+ALT+R to pull up manage.py
-
-# TODO admin username is john2 and pw is password.  email jls9fc.

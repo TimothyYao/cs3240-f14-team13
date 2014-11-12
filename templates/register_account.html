@@ -1,0 +1,77 @@
+
+
+
+
+
+
+
+
+{##}
+{#<form action="/register_account/" method="post">#}
+{#    {% csrf_token %}#}
+{#    {{ form }}#}
+{#    <input type="submit" value="Submit" />#}
+{#</form>#}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title> CREATE NEW BULLETIN</title>
+</head>
+<body>
+
+
+<H1> You are logged in as. . .</H1>
+
+{% if user.is_authenticated  %}
+<div id = user-info"> {{ user.username }}   |  <a href = "/logout/">logout</a>  </div>
+{% endif %}
+
+
+
+
+
+
+<form id="register" METHOD="post">
+{% csrf_token %}
+<h1>Sign up for Secure Witness </h1>
+  <fieldset>
+    <legend>Create Username</legend>
+    <div>
+        <label>Username
+        <input id="username" name="username" type="text" placeholder="username" required autofocus>
+		</label>
+    </div>
+
+
+    <div>
+        <label>Password
+        <input id="password" name="password" type="text" placeholder="password" required autofocus>
+		</label>
+    </div>
+
+
+  </fieldset>
+  <fieldset>
+  	<div>
+	    <button type=submit>Register</button>
+    </div>
+  </fieldset>
+</form>
+
+</body>
+</html>

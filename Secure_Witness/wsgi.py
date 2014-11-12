@@ -1,5 +1,5 @@
 """
-WSGI config for Django_Tut project.
+WSGI config for Secure_Witness project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -8,7 +8,7 @@ https://docs.djangoproject.com/en/1.7/howto/deployment/wsgi/
 """
 
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Django_Tut.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Secure_Witness.settings")
 
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
