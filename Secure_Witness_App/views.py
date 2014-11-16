@@ -14,6 +14,13 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.core.context_processors import csrf
 
+from models import Bulletin
+
+
+#todo uploading a file using forms example:
+# http://stackoverflow.com/questions/5871730/need-a-minimal-django-file-upload-example
+
+#http://www.djangobook.com/en/2.0/appendixA.html  'make sure directory is writable by the serb server's user account'
 
 @login_required
 def home (request):
@@ -37,21 +44,61 @@ def bulletin_form (request):  #takes no arguements. . .
 
     user = request.user
 
+    if request.method == 'POST':
+        print "there was a POST request. . ."
+        print request.POST ['authorID']
+        print request.POST ['theDate']
+        print request.POST ['postCode']
+        print request.POST ['country']
+        print request.POST ['address']
+        print request.POST ['description']
+
+
+        Author_ID =  request.POST ['authorID']
+        Date =  request.POST ['theDate']
+        Post_Code =request.POST ['postCode']
+        Country = request.POST ['country']
+        Description = request.POST ['description']
+        Address = request.POST ['address']
+        #file = request.POST['someFile']
+        file= request.FILES['someFile']
+        print "the file was: ", file
+
+        b = Bulletin(Author_ID = Author_ID, Date = Date, Address = Address, Post_Code = Post_Code, Country = Country, Description = Description, File_Field = file)
+
+
+        b.save()
+        derp = b.Description
+        print "The description in Database for this bulletin is saved as", derp
+
+
+
+        return HttpResponseRedirect('/home/') #TODO maybe display a temp "success" page and redirect 5 sec
+
+
+    else:
+
+    # //TODO else what??
+        print 'else what? . . .' #
+
+
+
 
     t = loader.get_template('bulletin_form.html')
-    c = Context({  #does context take in like a dictionary of random objects? ..
+    # c = Context({  #does context take in like a dictionary of random objects? ..
+    #     'thing1': 'silly string', 'user': user,
+    # })
+    #return HttpResponse(t.render(c))
+
+    rc = RequestContext(request, {  #does context take in like a dictionary of random objects? ..
         'thing1': 'silly string', 'user': user,
     })
-    return HttpResponse(t.render(c))
+    return HttpResponse(t.render(rc))  #Remember, must include the csrf token line in HTML of page getting requestContext
 
 
 
 def secureWitness (request):
-
-
     user = request.user
-
-
     t = loader.get_template('secureWitness.html')
     c = Context({  #does context take in like a dictionary of random objects? ..
         'thing1': 'silly string', 'user': user,
@@ -64,7 +111,6 @@ def secureWitness (request):
 
 def register_account (request):
 
-
     if request.method == 'POST':
         print "there was a POST request. . ."
         print request.POST ['username']  #I can use this to pluck any id/name?'s value out of the post request on html page
@@ -75,26 +121,14 @@ def register_account (request):
         user = User.objects.create_user(username=name, password=pw) # no email.
         #    user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
 
-
-
-
         user.save()
-
-
-
-
-
         return HttpResponseRedirect('/home/') #TODO maybe display a temp "success" page and redirect 5 sec
 
-
     else:
-
     # //TODO else what??
         print 'else what? . . .' #
 
     user = request.user
-
-
     t = loader.get_template('register_account.html')
     rc = RequestContext(request, {  #does context take in like a dictionary of random objects? ..
         'thing1': 'silly string', 'user': user,

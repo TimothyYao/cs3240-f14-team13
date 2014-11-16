@@ -19,4 +19,16 @@ class Bulletin(models.Model):
     Address = models.TextField()
     Post_Code = models.TextField() #I think max zip is 10.  "zip+4"
     Country = models.TextField()
-    Description = models.TextField()
+    Description = models.TextField()    #File_Field = models.FileField(upload_to='documents/secureWitness/uploads/')  #where do I specify the location, is it here?
+    File_Field = models.FileField()  #^ Can specify file path as above or use the path from settings.  Maybe pass variables here for AuthorID
+    #pass variables for the username or authorID which will create the directory or path to the right directory?
+
+    #File_Field = models.FileField(upload_to='documents/secureWitness/uploads/')  #where do I specify the location, is it here?
+
+
+#to drop this table :    ctrl+alt+r, SQL clear, secure_witness_app.  will drop bulletins.
+#Then remake table with syncDB
+
+    #NOTE: To RESET the if altering structure = ctrl+alt+r, flush,?   secure_witness_app.  will drop bulletins.  careful not to drop users in AUTH or whereever
+    # manage.py reset table_name
+    #TODO how do you clear all Bulletins in database?  also note to sync when adding new models or fields?
