@@ -18,7 +18,8 @@
 
 
 
-<form id="register">
+<form id="bulletin" METHOD= "POST">
+{% csrf_token %}
 <h1>New Bulletin</h1>
   <fieldset>
     <legend>Details</legend>
@@ -33,22 +34,9 @@
         <input id="theDate" name="theDate" type="date" required>
 		</label>
     </div>
-    <div>
-        <label>Email
-        <input id="email" name="email" type="email" placeholder="example@domain.com" required>
-		</label>
-    </div>
-
-        <legend>description</legend>
-    <div>
-        <label>Description
-        <textarea id="description" name="description" rows=5 required></textarea>
-		</label>
-    </div>
 
 
-  </fieldset>
-  <fieldset>
+
     <legend>address</legend>
     <div>
         <label>Address
@@ -316,10 +304,40 @@
         </datalist>
 		</label>
     </div>
-  </fieldset>
+
+
+
+     <legend>description</legend>
+    <div>
+        <label>Description
+        <textarea id="description" name="description" rows=5 required></textarea>
+		</label>
+    </div>
 
 
   </fieldset>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </fieldset>
+
+
+
+
   <fieldset>
   	<div>
 	    <button type=submit>Submit Bulletin</button>
