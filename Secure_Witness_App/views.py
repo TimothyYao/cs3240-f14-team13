@@ -138,3 +138,30 @@ def register_account (request):
 #//TODO extend user with user profile.  http://www.youtube.com/watch?v=qLRxkStiaUg .  for reader/author types
 
 #  secure registration form:   http://www.youtube.com/watch?v=Tam4IGrPESg&list=PLxxA5z-8B2xk4szCgFmgonNcCboyNneMD
+
+
+
+#  https://github.com/tschellenbach/Django-facebook/issues/214
+#  possible solution: " Finally I solved it by creating manually all the missing columns
+#  in the "dbshell", using first the command "sqlall" to know which columns I had to create"
+
+
+"""
+
+BEGIN;
+CREATE TABLE "Secure_Witness_App_bulletin" (
+    "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "Author_ID" text NOT NULL,
+    "Date" text NOT NULL,
+    "Address" text NOT NULL,
+    "Post_Code" text NOT NULL,
+    "Country" text NOT NULL,
+    "Description" text NOT NULL,
+    "File_Field" varchar(100) NOT NULL
+)
+;
+
+COMMIT;
+
+
+"""

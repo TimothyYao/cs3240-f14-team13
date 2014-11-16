@@ -14,16 +14,17 @@ from django.db import models
 #     Description = models.TextField
 
 class Bulletin(models.Model):
+
     Author_ID = models.TextField() #    (max_length=30)
     Date = models.TextField()  # is Date, Month, Year.  (2002, 12, 31)
     Address = models.TextField()
     Post_Code = models.TextField() #I think max zip is 10.  "zip+4"
     Country = models.TextField()
     Description = models.TextField()    #File_Field = models.FileField(upload_to='documents/secureWitness/uploads/')  #where do I specify the location, is it here?
-    File_Field = models.FileField()  #^ Can specify file path as above or use the path from settings.  Maybe pass variables here for AuthorID
+    #File_Field = models.FileField()  #^ Can specify file path as above or use the path from settings.  Maybe pass variables here for AuthorID
     #pass variables for the username or authorID which will create the directory or path to the right directory?
 
-    #File_Field = models.FileField(upload_to='documents/secureWitness/uploads/')  #where do I specify the location, is it here?
+    File_Field = models.FileField(upload_to='documents/secureWitness/uploads/')  #where do I specify the location, is it here?
 
 
 #to drop this table :    ctrl+alt+r, SQL clear, secure_witness_app.  will drop bulletins.
