@@ -33,3 +33,16 @@ class Bulletin(models.Model):
     #NOTE: To RESET the if altering structure = ctrl+alt+r, flush,?   secure_witness_app.  will drop bulletins.  careful not to drop users in AUTH or whereever
     # manage.py reset table_name
     #TODO how do you clear all Bulletins in database?  also note to sync when adding new models or fields?
+
+
+
+
+
+
+
+""" To alter DB models if it won't update normally. . .
+download DB browser for SQL.
+CTRL+ALT+R run SQALL and it will print the CREATE TABLE for how your model SHOULD be according to models.py.
+in DB browser, navigate to the project's DB.  open.  modify.  DROP TABLE "table name".  paste the create table code from SQall.
+save.  done. . .  -- This fixed the 'table not found' on submitting a file Error Page
+"""
