@@ -12,8 +12,6 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.core.context_processors import csrf
 
-<<<<<<< HEAD
-=======
 from models import Bulletin
 
 
@@ -22,7 +20,6 @@ from models import Bulletin
 
 #http://www.djangobook.com/en/2.0/appendixA.html  'make sure directory is writable by the serb server's user account'
 
->>>>>>> ec83ea23fb14c2c57f4ca4f8e2101432a2fe7327
 @login_required
 def home (request):
     user = request.user
@@ -36,8 +33,6 @@ def home (request):
 @login_required
 def bulletin_form (request):  #takes no arguements. . .
     user = request.user
-<<<<<<< HEAD
-=======
 
     if request.method == 'POST':
         print "there was a POST request. . ."
@@ -79,7 +74,6 @@ def bulletin_form (request):  #takes no arguements. . .
 
 
 
->>>>>>> ec83ea23fb14c2c57f4ca4f8e2101432a2fe7327
     t = loader.get_template('bulletin_form.html')
     # c = Context({  #does context take in like a dictionary of random objects? ..
     #     'thing1': 'silly string', 'user': user,
@@ -100,10 +94,6 @@ def secureWitness (request):
     return HttpResponse(t.render(c))
 
 def register_account (request):
-<<<<<<< HEAD
-=======
-
->>>>>>> ec83ea23fb14c2c57f4ca4f8e2101432a2fe7327
     if request.method == 'POST':
         print "there was a POST request. . ."
         print request.POST ['username']  #I can use this to pluck any id/name?'s value out of the post request on html page
@@ -112,15 +102,9 @@ def register_account (request):
         pw = request.POST ['password']
         user = User.objects.create_user(username=name, password=pw) # no email.
         #    user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-<<<<<<< HEAD
-        user.save()
-        return HttpResponseRedirect('/home/') #TODO maybe display a temp "success" page and redirect 5 sec
-=======
-
         user.save()
         return HttpResponseRedirect('/home/') #TODO maybe display a temp "success" page and redirect 5 sec
 
->>>>>>> ec83ea23fb14c2c57f4ca4f8e2101432a2fe7327
     else:
     # //TODO else what??
         print 'else what? . . .' #
