@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load bulletin_extras %}
+{% block content %}
+<ol>
+{% for bulletin in bulletins %}
+    <li>
+        <p class="bulletin-title">
+            {{ bulletin.Title }}
+        </p>
+        <p class="bulletin-info">
+            posted by: {{ bulletin.Author }} {{ bulletin.Date|age }}
+        </p>
+    </li>
+{%  endfor %}
+</ol>
+{% endblock content %}

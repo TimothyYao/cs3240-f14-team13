@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="346895907">
+    <data-source source="LOCAL" name="Django default" uuid="80b0a537-70e0-4303-b692-6ff2cf6f1d70">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\Timothy\Documents\School\UVA\2nd Year\3rd Semester\CS 3240\Project\cs3240-f14-team13\SecureWitness_1_0\db.sqlite3</jdbc-url>
+      <libraries />
+    </data-source>
+  </component>
+</project>
+
