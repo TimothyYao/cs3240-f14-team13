@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secure Witness</title>
+</head>
+<body>
+{% if user.is_authenticated %}
+<div id = user-info"> {{ user.username }} | <a href = "/logout/">logout</a>  </div>
+{% endif %}
+<form id="register" METHOD="post">
+{% csrf_token %}
+<h1>Sign up for Secure Witness </h1>
+  <fieldset>
+    <legend>Create Username</legend>
+    <div>
+        <label>Username
+        <input id="username" name="username" type="text" placeholder="username" required autofocus>
+		</label>
+    </div>
+    <div>
+        <label>Password
+        <input id="password" name="password" type="password" placeholder="password" required autofocus>
+		</label>
+    </div>
+         <div>
+        <label>Confirm Password
+        <input id="password2" name="password2" type="password" placeholder="password" required autofocus>
+		</label>
+    </div>
+  </fieldset>
+  <fieldset>
+  	<div>
+	    <button type=submit>Register</button>
+    </div>
+  </fieldset>
+</form>
+</body>
+</html>
