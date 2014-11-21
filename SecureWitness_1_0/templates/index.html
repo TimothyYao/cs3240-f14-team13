@@ -5,7 +5,7 @@
 {% for bulletin in bulletins %}
     <li>
         <p class="bulletin-title">
-            {{ bulletin.Title }}
+            <a href = "{{ bulletin.id }}/">{{ bulletin.Title }}</a>
         </p>
         <p class="bulletin-info">
             posted by: {{ bulletin.Author }} {{ bulletin.Date|age }}

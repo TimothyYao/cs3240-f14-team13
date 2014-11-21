@@ -23,6 +23,10 @@ def search(request):
     #unimplemented
     return HttpResponseRedirect('/')
 
+def details(request, bulletin_id):
+    bulletin = Bulletin.objects.get(pk=bulletin_id)
+    return render(request, 'details.html', {'bulletin': bulletin})
+
 def register(request):
     if request.method == 'POST':
         print "there was a POST request. . ."

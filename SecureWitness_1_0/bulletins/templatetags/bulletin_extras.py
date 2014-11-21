@@ -20,5 +20,5 @@ def age(date):
         value = age_in_minutes//(60*24)
         precision = 'day'
 
-    age_string = '%d %s%s ago' % (value, precision, ('s' if value > 1 else ''))
+    age_string = '%d %s%s ago' % (value, precision, ('s' if value != 1 else ''))
     return age_string
