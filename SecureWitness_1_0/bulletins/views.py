@@ -37,10 +37,8 @@ def details(request, bulletin_id):
     return render(request, 'details.html', {'bulletin': bulletin})
 
 def register(request):
+    message = 'Create User'
     if request.method == 'POST':
-        print "there was a POST request. . ."
-        print request.POST ['username']
-        print request.POST ['password']
         name = request.POST ['username']
         pw = request.POST ['password']
         pw2 = request.POST ['password2']
@@ -48,12 +46,17 @@ def register(request):
             user = User.objects.create_user(username=name, password=pw) # no email.
             user.save()
             return HttpResponseRedirect('/') #TODO maybe display a temp "success" page and redirect 5 sec
-    user = request.user
-    t = loader.get_template('register.html')
-    rc = RequestContext(request, {  #does context take in like a dictionary of random objects? ..
-        'thing1': 'silly string', 'user': user,
-    })
-    return HttpResponse(t.render(rc)) #do I also need to pass the csrf to the html for token?  Is a token being passed automatically?
+        else:
+            message = 'passwords do not match'
+    return render(request, 'register.html', {"message":
+            message
+        })
+    # user = request.user
+    # t = loader.get_template('register.html')
+    # rc = RequestContext(request, {  #does context take in like a dictionary of random objects? ..
+    #     'thing1': 'silly string', 'user': user,
+    # })
+    # return HttpResponse(t.render(rc)) #do I also need to pass the csrf to the html for token?  Is a token being passed automatically?
 
 @login_required()
 def submit(request):

@@ -7,6 +7,8 @@
 {% endif %}
     <form id="register" METHOD="post">
     {% csrf_token %}
+        {{ message }}
+        <br>
         <p1>Create Username:</p1>
         <br>
         <input id="username" name="username" type="text" placeholder="username" required autofocus>
