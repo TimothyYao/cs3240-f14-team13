@@ -42,14 +42,16 @@ def register(request):
         name = request.POST ['username']
         pw = request.POST ['password']
         pw2 = request.POST ['password2']
+        #all_users = list(Users.objects);
+        #print all_users;
         if pw == pw2:
             if len(pw) < 7:
                 message = 'password must have at least 7 characters'
                 return render(request, 'register.html', {"message": message})
-            elif not any(x.isupper() for x in pw):
+            if not any(x.isupper() for x in pw):
                 message = 'password must contain at least 1 capital'
                 return render(request, 'register.html', {"message": message})
-            elif not any(x.isdigit() for x in pw):
+            if not any(x.isdigit() for x in pw):
                 message = 'password must contain at least 1 digit'
                 return render(request, 'register.html', {"message": message})
             user = User.objects.create_user(username=name, password=pw) # no email.
