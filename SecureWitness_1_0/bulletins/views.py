@@ -9,12 +9,12 @@ from bulletins.models import Bulletin
 from bulletins.models import BulletinSearch
 from bulletins.forms import BulletinForm
 
-def recent_bulletins(recent = 100):
+def recent_bulletins(recent=100):
     latest_bulletins = Bulletin.objects.all().order_by('-Date')[:recent]
     return latest_bulletins
 
 def index(request):
-    bulletins = recent_bulletins(recent = 50)
+    bulletins = recent_bulletins(recent=50)
     return render(request, 'index.html', {
         'bulletins': bulletins,
         'user': request.user
@@ -22,10 +22,10 @@ def index(request):
 
 def search(request):
     if len(request.GET) > 0:
-        term = request.GET ['search']
-        type = request.GET ['type']
+        term = request.GET['search']
+        category = request.GET['type']
         print "there was a GET request. . ."
-        bulletins = Bulletin.objects.search(term, type)[:50]
+        bulletins = Bulletin.objects.search(term, category)[:50]
         return render(request, 'search_results.html', {
             'bulletins': bulletins,
             'user': request.user
@@ -43,20 +43,21 @@ def register(request):
         pw = request.POST ['password']
         pw2 = request.POST ['password2']
         if pw == pw2:
+            if len(pw) < 7:
+                message = 'password must have at least 7 characters'
+                return render(request, 'register.html', {"message": message})
+            elif not any(x.isupper() for x in pw):
+                message = 'password must contain at least 1 capital'
+                return render(request, 'register.html', {"message": message})
+            elif not any(x.isdigit() for x in pw):
+                message = 'password must contain at least 1 digit'
+                return render(request, 'register.html', {"message": message})
             user = User.objects.create_user(username=name, password=pw) # no email.
             user.save()
             return HttpResponseRedirect('/') #TODO maybe display a temp "success" page and redirect 5 sec
         else:
             message = 'passwords do not match'
-    return render(request, 'register.html', {"message":
-            message
-        })
-    # user = request.user
-    # t = loader.get_template('register.html')
-    # rc = RequestContext(request, {  #does context take in like a dictionary of random objects? ..
-    #     'thing1': 'silly string', 'user': user,
-    # })
-    # return HttpResponse(t.render(rc)) #do I also need to pass the csrf to the html for token?  Is a token being passed automatically?
+    return render(request, 'register.html', {"message": message})
 
 @login_required()
 def submit(request):
