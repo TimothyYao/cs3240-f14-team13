@@ -58,7 +58,7 @@ def register(request):
 @login_required()
 def submit(request):
     if request.method == 'POST':
-        form = BulletinForm(request.POST)
+        form = BulletinForm(request.POST, request.FILES)
         if form.is_valid():
             bulletin = form.save(commit=False)
             bulletin.Author = request.user
