@@ -12,11 +12,11 @@ class BulletinSearch(models.Manager):
         terms = [term.strip() for term in search_terms.split()]
         q_objects = []
         for term in terms:
-            if (search_category=='title'):
+            if search_category=='title':
                 q_objects.append(Q(Title__icontains=term))
-            elif (search_category=='pseudonym'):
+            elif search_category=='pseudonym':
                 q_objects.append(Q(Pseudonym__icontains=term))
-            elif (search_category=='location'):
+            elif search_category=='location':
                 q_objects.append(Q(Location__icontains=term))
             else:
                 q_objects.append(Q(Description__icontains=term))

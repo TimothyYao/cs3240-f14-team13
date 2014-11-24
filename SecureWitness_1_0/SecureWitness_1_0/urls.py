@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     url(r'^search/$', 'bulletins.views.search'),
     url(r'^register/$', 'bulletins.views.register'),
     url(r'^search/$', 'bulletins.views.search'),
-    url(r'^(?P<bulletin_id>\d+)/$', 'bulletins.views.details'),
     url(r'^search/(?P<bulletin_id>\d+)/$', 'bulletins.views.details'),
+    url(r'^(?P<bulletin_id>\d+)/$', 'bulletins.views.details'),
     url(r'', include('bulletins.urls')),
 )

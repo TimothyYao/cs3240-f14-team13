@@ -25,8 +25,8 @@ def search(request):
         term = request.GET ['search']
         type = request.GET ['type']
         print "there was a GET request. . ."
-        bulletins = Bulletin.objects.search(term, type)
-        return render(request, 'index.html', {
+        bulletins = Bulletin.objects.search(term, type)[:50]
+        return render(request, 'search_results.html', {
             'bulletins': bulletins,
             'user': request.user
         })
