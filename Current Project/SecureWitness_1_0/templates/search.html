@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Search</h1>
+    <form id="search" METHOD="get">
+        <p1>Search:</p1>
+        <input type="text" name="search">
+        <br>
+        <p1>by:</p1>
+        <br>
+        <input type="radio" name="type" value="title" checked>Title
+        <br>
+        <input type="radio" name="type" value="pseudonym">Author
+        <br>
+        <input type="radio" name="type" value="location">Location
+        <br>
+        <input type="radio" name="type" value="description">Description
+        <br>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+{% endblock content %}
