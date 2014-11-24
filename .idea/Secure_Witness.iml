@@ -16,11 +16,6 @@
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
-    <option name="TEMPLATE_FOLDERS">
-      <list>
-        <option value="D:\Data\CS3240\Secure_Witness\templates" />
-      </list>
-    </option>
   </component>
 </module>
 
