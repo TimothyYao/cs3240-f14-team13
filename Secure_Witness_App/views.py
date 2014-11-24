@@ -14,8 +14,11 @@ from django.core.context_processors import csrf
 
 
 from models import Bulletin
+#this type of import only works on 3+?
 from Crypto.Cipher import AES
 from Crypto.Hash import SHA256
+
+
 
 def encrypt(key, filename):
     chunksize = 64*1024
@@ -26,7 +29,7 @@ def encrypt(key, filename):
     for i in range (16):
         IV +=chr(random.randint(0,0xFF))
     encryptor = AES.new(key, AES.MODE_CBC, IV)
-    with open(filename, 'rb'), as infile:
+    with open(filename, 'rb') as infile:
         with open(outputFile, 'wb') as outfile:
             outfile.write(filesize)
             outfile.write(IV)
