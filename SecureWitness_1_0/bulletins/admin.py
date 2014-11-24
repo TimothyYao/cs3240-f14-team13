@@ -8,7 +8,7 @@ class BulletinAdmin(admin.ModelAdmin):
 
     fieldsets = [
         ('Bulletin', {
-            'fields': ('Title', 'Description')
+            'fields': ('Title', 'Pseudonym', 'Description')
         }),
         ('Author', {
             'classes': ('collapse',),

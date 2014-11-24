@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load bulletin_extras %}
 {% block content %}
+    {% if user.is_authenticated %}
+    <h1>Recent Bulletins</h1>
 <ol>
 {% for bulletin in bulletins %}
     <li>
@@ -8,9 +10,10 @@
             <a href = "{{ bulletin.id }}/">{{ bulletin.Title }}</a>
         </p>
         <p class="bulletin-info">
-            posted by: {{ bulletin.Author }} {{ bulletin.Date|age }}
+            posted by: {{ bulletin.Pseudonym }} {{ bulletin.Date|age }}
         </p>
     </li>
 {%  endfor %}
 </ol>
+    {% endif %}
 {% endblock content %}

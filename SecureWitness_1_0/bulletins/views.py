@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from bulletins.models import Bulletin
+from bulletins.models import BulletinSearch
 from bulletins.forms import BulletinForm
 
 def recent_bulletins(recent = 100):
@@ -20,8 +21,16 @@ def index(request):
     })
 
 def search(request):
-    #unimplemented
-    return HttpResponseRedirect('/')
+    if len(request.GET) > 0:
+        term = request.GET ['search']
+        type = request.GET ['type']
+        print "there was a GET request. . ."
+        bulletins = Bulletin.objects.search(term, type)
+        return render(request, 'index.html', {
+            'bulletins': bulletins,
+            'user': request.user
+        })
+    return render(request, 'search.html')
 
 def details(request, bulletin_id):
     bulletin = Bulletin.objects.get(pk=bulletin_id)
@@ -34,11 +43,12 @@ def register(request):
         print request.POST ['password']
         name = request.POST ['username']
         pw = request.POST ['password']
-        user = User.objects.create_user(username=name, password=pw) # no email.
-        user.save()
-        return HttpResponseRedirect('/') #TODO maybe display a temp "success" page and redirect 5 sec
-    else:
-     user = request.user
+        pw2 = request.POST ['password2']
+        if pw == pw2:
+            user = User.objects.create_user(username=name, password=pw) # no email.
+            user.save()
+            return HttpResponseRedirect('/') #TODO maybe display a temp "success" page and redirect 5 sec
+    user = request.user
     t = loader.get_template('register.html')
     rc = RequestContext(request, {  #does context take in like a dictionary of random objects? ..
         'thing1': 'silly string', 'user': user,
