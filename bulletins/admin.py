@@ -1,6 +1,7 @@
 from django.contrib import admin
 from bulletins.models import Bulletin
 
+
 class BulletinAdmin(admin.ModelAdmin):
     list_display = ('Title', 'Author', 'Date')
     list_filter = ('Date',)

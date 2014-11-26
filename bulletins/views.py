@@ -5,9 +5,9 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from bulletins.models import Bulletin
-from bulletins.models import BulletinSearch
 from bulletins.forms import BulletinForm
+from bulletins.models import Bulletin
+
 
 def recent_bulletins(recent=100):
     latest_bulletins = Bulletin.objects.all().order_by('-Date')[:recent]
