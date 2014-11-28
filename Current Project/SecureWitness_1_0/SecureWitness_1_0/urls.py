@@ -11,5 +11,6 @@ urlpatterns = patterns('',
     url(r'^search/$', 'bulletins.views.search'),
     url(r'^search/(?P<bulletin_id>\d+)/$', 'bulletins.views.details'),
     url(r'^(?P<bulletin_id>\d+)/$', 'bulletins.views.details'),
+    #url(r'^(?P<bulletin_id>\d+)/uploads/', 'bulletins.views.download'),
     url(r'', include('bulletins.urls')),
 )

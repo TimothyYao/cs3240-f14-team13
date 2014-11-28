@@ -32,8 +32,8 @@ class Bulletin(models.Model):
     Location = models.TextField()
     Description = models.TextField()
     #Permissions = models.ForeignKey(Permission)
-    path = 'authors/%s/uploads/' % id
-    File_Field = models.FileField(upload_to='uploads/')
+    path = '%s/uploads/' % id
+    File_Field = models.FileField(upload_to='uploads')
 
     def __unicode__(self):
         return "%s - %s" % (self.Author, self.Title)

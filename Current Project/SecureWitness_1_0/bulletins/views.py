@@ -36,14 +36,20 @@ def details(request, bulletin_id):
     bulletin = Bulletin.objects.get(pk=bulletin_id)
     return render(request, 'details.html', {'bulletin': bulletin})
 
+def download(request, bulletin_id):
+    pass
+
 def register(request):
     message = 'Create User'
     if request.method == 'POST':
         name = request.POST ['username']
         pw = request.POST ['password']
         pw2 = request.POST ['password2']
-        #all_users = list(Users.objects);
-        #print all_users;
+        all_users = User.objects.all()
+        for i in all_users:
+            if i.username == name:
+                message = 'username already taken'
+                return render(request, 'register.html', {'message': message})
         if pw == pw2:
             if len(pw) < 7:
                 message = 'password must have at least 7 characters'
