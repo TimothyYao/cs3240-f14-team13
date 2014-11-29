@@ -1,5 +1,9 @@
 from django.contrib import admin
-from bulletins.models import Bulletin
+from bulletins.models import Bulletin, File
+
+class FilesInline(admin.TabularInline):
+    model = File
+    extra = 1
 
 class BulletinAdmin(admin.ModelAdmin):
     list_display = ('Title', 'Author', 'Date')
@@ -8,7 +12,7 @@ class BulletinAdmin(admin.ModelAdmin):
 
     fieldsets = [
         ('Bulletin', {
-            'fields': ('Title', 'Pseudonym', 'Location', 'Description', 'File_Field')
+            'fields': ('Title', 'Pseudonym', 'Location', 'Description')
         }),
         ('Author', {
             'classes': ('collapse',),
@@ -19,6 +23,7 @@ class BulletinAdmin(admin.ModelAdmin):
             'fields': ('Date',)
         })
     ]
+    inlines = [FilesInline]
     readonly_fields = ('Date',)
 
 admin.site.register(Bulletin, BulletinAdmin)

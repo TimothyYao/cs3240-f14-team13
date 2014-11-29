@@ -2,18 +2,21 @@
 {% load bulletin_extras %}
 {% block content %}
     {% if user.is_authenticated %}
-    <h1>Search Results</h1>
-<ol>
-{% for bulletin in bulletins %}
-    <li>
-        <p class="bulletin-title">
-            <a href = "{{ bulletin.id }}/">{{ bulletin.Title }}</a>
-        </p>
-        <p class="bulletin-info">
-            posted by: {{ bulletin.Pseudonym }} {{ bulletin.Date|age }}
-        </p>
-    </li>
-{%  endfor %}
-</ol>
+        <h1>Search Results</h1>
+        {% if no_results %}
+            <p1>no results found</p1>
+        {% endif %}
+        <ol>
+        {% for bulletin in bulletins %}
+            <li>
+                <p class="bulletin-title">
+                    <a href = "{{ bulletin.id }}/">{{ bulletin.Title }}</a>
+                </p>
+                <p class="bulletin-info">
+                    posted by: {{ bulletin.Pseudonym }} {{ bulletin.Date|age }}
+                </p>
+            </li>
+        {%  endfor %}
+        </ol>
     {% endif %}
 {% endblock content %}

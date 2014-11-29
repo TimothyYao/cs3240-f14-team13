@@ -5,13 +5,20 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from bulletins.models import Bulletin
-from bulletins.models import BulletinSearch
+from bulletins.models import Bulletin, BulletinSearch, File
 from bulletins.forms import BulletinForm
 
 def recent_bulletins(recent=100):
     latest_bulletins = Bulletin.objects.all().order_by('-Date')[:recent]
     return latest_bulletins
+
+def handle_upload(request, bulletin):
+    if 'files' in request.FILES:
+            for i in request.FILES.getlist('files'):
+                upload = File()
+                upload.bulletin = bulletin
+                upload.File_Field = i
+                upload.save()
 
 def index(request):
     bulletins = recent_bulletins(recent=50)
@@ -26,9 +33,11 @@ def search(request):
         term = request.GET['search']
         category = request.GET['type']
         bulletins = Bulletin.objects.search(term, category)[:50]
+        no_results = len(bulletins) == 0
         return render(request, 'search_results.html', {
             'bulletins': bulletins,
-            'user': request.user
+            'user': request.user,
+            'no_results': no_results
         })
     return render(request, 'search.html')
 
@@ -47,10 +56,14 @@ def details(request, bulletin_id):
         elif 'move' in request.POST:
             print 'move'
     bulletin = Bulletin.objects.get(pk=bulletin_id)
+    docs = File.objects.filter(bulletin=bulletin)
+    has_docs = len(docs) > 0
     owner = request.user == bulletin.Author
     return render(request, 'details.html', {
         'bulletin': bulletin,
-        'owner': owner
+        'owner': owner,
+        'docs': docs,
+        'has_docs': has_docs
     })
 
 def register(request):
@@ -79,12 +92,15 @@ def register(request):
 @login_required()
 def submit(request):
     if request.method == 'POST':
-        form = BulletinForm(request.POST, request.FILES)
-        if form.is_valid():
-            bulletin = form.save(commit=False)
-            bulletin.Author = request.user
-            bulletin.save()
-            return HttpResponseRedirect('/')
+        bulletin = Bulletin()
+        bulletin.Title = request.POST["title"]
+        bulletin.Pseudonym = request.POST["pseudonym"]
+        bulletin.Location = request.POST["location"]
+        bulletin.Description = request.POST["description"]
+        bulletin.Author = request.user
+        bulletin.save()
+        handle_upload(request, bulletin)
+        return HttpResponseRedirect('/'+str(bulletin.id)+'/')
     else:
         form = BulletinForm()
     return render(request, 'submit.html', {'form': form})
@@ -92,8 +108,9 @@ def submit(request):
 @login_required()
 def edit_bulletin(request, bulletin_id):
     bulletin = Bulletin.objects.get(pk=bulletin_id)
+    if request.user != bulletin.Author:
+        return HttpResponseRedirect('/'+bulletin_id+'/')
     if request.method == 'POST':
-        print request.POST
         if 'cancel' in request.POST:
             return HttpResponseRedirect('/'+bulletin_id+'/')
         bulletin.Title = request.POST["title"]
@@ -103,5 +120,5 @@ def edit_bulletin(request, bulletin_id):
         bulletin.save()
         return HttpResponseRedirect('/'+bulletin_id+'/')
     return render(request, 'edit_bulletin.html', {
-        'bulletin': bulletin
+        'bulletin': bulletin,
     })
