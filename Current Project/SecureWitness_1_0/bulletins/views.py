@@ -5,12 +5,22 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from bulletins.models import Bulletin, BulletinSearch, File
-from bulletins.forms import BulletinForm
+from bulletins.models import Bulletin, BulletinSearch, File, Folder
 
 def recent_bulletins(recent=100):
     latest_bulletins = Bulletin.objects.all().order_by('-Date')[:recent]
     return latest_bulletins
+
+def delete_folder(folder):
+    bulletins = Folder.objects.filter(folder=folder)
+    for bulletin in bulletins:
+        bulletin.delete()
+    subfolders = Folder.objects.filter(root=folder).exclude(pk=folder.id)
+    for subfolder in subfolders:
+        delete_folder(subfolder)
+    print 'deleting folder'
+    print folder.name
+    folder.delete()
 
 def handle_upload(request, bulletin):
     if 'files' in request.FILES:
@@ -42,14 +52,47 @@ def search(request):
     return render(request, 'search.html')
 
 @login_required()
-def search_redirect(request, bulletin_id):
-    return HttpResponseRedirect('/'+bulletin_id+'/')
+def folder(request, folder_id):
+    folder = Folder.objects.get(pk=folder_id)
+    if request.user != folder.owner:
+        return HttpResponseRedirect('/')
+    if request.method == 'POST':
+        if 'bulletin' in request.POST:
+            return HttpResponseRedirect('submit')
+        elif 'delete' in request.POST:
+            pass
+            #delete_folder(folder)
+            #return HttpResponseRedirect('/myBulletins/')
+        elif 'folder' in request.POST:
+            return HttpResponseRedirect('createFolder')
+    bulletins = Bulletin.objects.filter(folder=folder)
+    folders = Folder.objects.filter(root=folder)
+    is_root = folder.root is None
+    return render(request, 'folder.html', {
+        'folder': folder,
+        'bulletins': bulletins,
+        'folders': folders,
+        'is_root': is_root
+    })
+
+@login_required()
+def my_bulletins(request):
+    folders = Folder.objects.filter(owner=request.user, name='root')
+    if len(folders) == 0:
+        folder = Folder()
+        folder.owner = request.user
+        folder.name = 'root'
+        folder.save()
+        folder_id = folder.id
+    else:
+        folder_id = folders[0].id
+    return HttpResponseRedirect('/folder/'+str(folder_id)+'/')
 
 @login_required()
 def details(request, bulletin_id):
     if request.method == 'POST':
         if 'edit' in request.POST:
-            return HttpResponseRedirect('/'+bulletin_id+'/edit/')
+            return HttpResponseRedirect('/bulletin/'+bulletin_id+'/edit/')
         elif 'delete' in request.POST:
             Bulletin.objects.get(pk=bulletin_id).delete()
             return HttpResponseRedirect('/')
@@ -90,7 +133,21 @@ def register(request):
     return render(request, 'register.html', {"message": message})
 
 @login_required()
-def submit(request):
+def create_folder(request, folder_id):
+    if request.method == 'POST':
+        folder = Folder()
+        folder.owner = request.user
+        folder.root = Folder.objects.get(pk=folder_id)
+        folder.name = request.POST['name']
+        folder.save()
+        return HttpResponseRedirect('/folder/'+str(folder_id)+'/')
+    return render(request, 'create_folder.html')
+
+@login_required()
+def submit(request, folder_id):
+    folder = Folder.objects.get(pk=folder_id)
+    if request.user != folder.owner:
+        return HttpResponseRedirect('/')
     if request.method == 'POST':
         bulletin = Bulletin()
         bulletin.Title = request.POST["title"]
@@ -98,27 +155,28 @@ def submit(request):
         bulletin.Location = request.POST["location"]
         bulletin.Description = request.POST["description"]
         bulletin.Author = request.user
+        bulletin.folder = folder
         bulletin.save()
         handle_upload(request, bulletin)
-        return HttpResponseRedirect('/'+str(bulletin.id)+'/')
-    else:
-        form = BulletinForm()
-    return render(request, 'submit.html', {'form': form})
+        return HttpResponseRedirect('/bulletin/'+str(bulletin.id)+'/')
+    return render(request, 'submit.html')
 
 @login_required()
 def edit_bulletin(request, bulletin_id):
     bulletin = Bulletin.objects.get(pk=bulletin_id)
     if request.user != bulletin.Author:
-        return HttpResponseRedirect('/'+bulletin_id+'/')
+        return HttpResponseRedirect('/bulletin/'+bulletin_id+'/')
     if request.method == 'POST':
         if 'cancel' in request.POST:
-            return HttpResponseRedirect('/'+bulletin_id+'/')
+            return HttpResponseRedirect('/bulletin/'+bulletin_id+'/')
         bulletin.Title = request.POST["title"]
         bulletin.Pseudonym = request.POST["pseudonym"]
         bulletin.Location = request.POST["location"]
         bulletin.Description = request.POST["description"]
         bulletin.save()
-        return HttpResponseRedirect('/'+bulletin_id+'/')
+        return HttpResponseRedirect('/bulletin/'+bulletin_id+'/')
+    docs = File.objects.filter(bulletin=bulletin)
     return render(request, 'edit_bulletin.html', {
         'bulletin': bulletin,
+        'docs': docs
     })

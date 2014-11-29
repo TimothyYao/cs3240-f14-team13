@@ -18,7 +18,7 @@
     <h1 id="document header">Documents:</h1>
     {% if has_docs %}
         {% for doc in docs %}
-            <p1 id="document name">{{ doc.File_Field.name }}<br></p1>
+            <p1 id="document name">{{ doc }}<br></p1>
         {% endfor %}
     {% else %}
         <p1 id="document text">this bulletin has no documents</p1>

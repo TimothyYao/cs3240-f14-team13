@@ -7,7 +7,7 @@
         <div id="header">
             <div id="site-logo">Secure Witness</div>
             {% if user.is_authenticated %}
-                <div id="user-info">logged in as {{ user.username }} | <a href = "/">home</a> | <a href = "/submit/">submit</a> | <a href = "/search/">search</a> | <a href="/logout/">logout</a></div>
+                <div id="user-info">logged in as {{ user.username }} | <a href = "/">home</a> | <a href = "/search/">search</a> | <a href="/logout/">logout</a> | <a href="/myBulletins/">myBulletins</a></div>
             {% else %}
                 <div id="user-info"><a href = "/">home</a> | <a href="/login/">login</a> | <a href="/register/">register</a></div>
             {% endif %}

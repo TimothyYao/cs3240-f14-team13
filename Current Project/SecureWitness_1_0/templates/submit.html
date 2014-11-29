@@ -1,16 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <!--
-    <h1>Submit Bulletin</h1>
-    <form enctype="multipart/form-data" action = "/submit/" method="post">{csrf_token}
-        {form.as_p}
-        <input type="submit" value="Submit" />
-    </form>
-    -->
     <h1>Submit Bulletin</h1>
     <form id="submit" METHOD="post" enctype="multipart/form-data">
-    {% csrf_token %}
+        {% csrf_token %}
         <p1>Title:</p1>
         <br>
         <input id="title" name="title" type="text" required autofocus>

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Create Folder</h1>
+    <form id="submit" METHOD="post">
+        {% csrf_token %}
+        <p1>name:</p1>
+        <br>
+        <input id="name" name="name" type="text" required autofocus>
+        <br>
+        <br>
+        <input type="submit" value="create folder">
+   </form>
+{% endblock content %}

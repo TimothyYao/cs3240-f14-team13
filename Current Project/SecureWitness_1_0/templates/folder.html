@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if is_root %}
+        <h1>{{ folder.name }}</h1>
+    {% else %}
+        <h1><a href = "/folder/{{ folder.root.id }}">{{ folder.name }}</a></h1>
+    {% endif %}
+    <p1>subfolders:<br></p1>
+    <form id="folder" METHOD="post">
+        {% csrf_token %}
+        {% for subfolder in folders %}
+            <a href = "/folder/{{ subfolder.id }}/">{{ subfolder.name }}</a><br>
+        {% endfor %}
+        <br>
+        <input type="submit" name="folder" value="create folder">
+        <input type="submit" name="delete"  value="delete folder" onclick="return confirm('Are you sure you want delete this folder and all its contents?')"><br>
+        <br>
+        <p1>bulletins:<br></p1>
+        {% for bulletin in bulletins %}
+            <a href = "/bulletin/{{ bulletin.id }}/">{{ bulletin.Title }}</a><br>
+        {% endfor %}
+        <br>
+        <input type="submit" name="bulletin" value="add bulletin">
+    </form>
+{% endblock content %}

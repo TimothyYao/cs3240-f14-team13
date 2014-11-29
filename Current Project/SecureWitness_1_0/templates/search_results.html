@@ -10,7 +10,7 @@
         {% for bulletin in bulletins %}
             <li>
                 <p class="bulletin-title">
-                    <a href = "{{ bulletin.id }}/">{{ bulletin.Title }}</a>
+                    <a href = "/bulletin/{{ bulletin.id }}/">{{ bulletin.Title }}</a>
                 </p>
                 <p class="bulletin-info">
                     posted by: {{ bulletin.Pseudonym }} {{ bulletin.Date|age }}

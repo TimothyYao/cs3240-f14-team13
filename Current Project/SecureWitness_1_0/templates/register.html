@@ -6,7 +6,7 @@
 <div id = user-info"> {{ user.username }} | <a href = "/logout/">logout</a>  </div>
 {% endif %}
     <form id="register" METHOD="post">
-    {% csrf_token %}
+        {% csrf_token %}
         {{ message }}
         <br>
         <p1>Create Username:</p1>

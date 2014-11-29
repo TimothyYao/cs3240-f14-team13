@@ -23,7 +23,16 @@ class BulletinSearch(models.Manager):
         qs = self.get_query_set()
         return qs.filter(reduce(operator.or_, q_objects))
 
+class Folder(models.Model):
+    name = models.CharField(max_length=200)
+    owner = models.ForeignKey(User)
+    root = models.ForeignKey('self', null=True)
+
+    def __unicode__(self):
+        return self.name
+
 class Bulletin(models.Model):
+    folder = models.ForeignKey(Folder)
     objects = BulletinSearch()
     Title = models.CharField(max_length=200)
     Author = models.ForeignKey(User)
@@ -44,3 +53,6 @@ class Bulletin(models.Model):
 class File(models.Model):
     bulletin = models.ForeignKey(Bulletin)
     File_Field = models.FileField(upload_to='uploads/%Y/%m/%d')
+
+    def __unicode__(self):
+        return self.File_Field.name
