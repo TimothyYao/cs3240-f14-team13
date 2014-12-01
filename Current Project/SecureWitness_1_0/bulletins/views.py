@@ -5,7 +5,8 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from bulletins.models import Bulletin, BulletinSearch, File, Folder
+from models import Bulletin, BulletinSearch, File, Folder, Permission
+#from bulletins.models import Bulletin, BulletinSearch, File, Folder
 
 def recent_bulletins(recent=100):
     latest_bulletins = Bulletin.objects.all().order_by('-Date')[:recent]
@@ -124,6 +125,10 @@ def details(request, bulletin_id):
     docs = File.objects.filter(bulletin=bulletin)
     has_docs = len(docs) > 0
     owner = request.user == bulletin.Author
+
+    for doc in docs:
+        doc.permission = (len(Permission.objects.filter(UserID=request.user.pk, FileID=doc.pk)) > 0 or owner)
+
     return render(request, 'details.html', {
         'bulletin': bulletin,
         'owner': owner,
@@ -199,6 +204,7 @@ def edit_bulletin(request, bulletin_id):
         handle_upload(request, bulletin)
         return HttpResponseRedirect('/bulletin/'+bulletin_id+'/')
     docs = File.objects.filter(bulletin=bulletin)
+
     return render(request, 'edit_bulletin.html', {
         'bulletin': bulletin,
         'docs': docs

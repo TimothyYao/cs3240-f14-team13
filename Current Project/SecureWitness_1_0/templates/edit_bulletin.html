@@ -23,7 +23,7 @@
         <p1>Documents:</p1>
         <br>
         {% for doc in docs %}
-            <span id="document name">{{ doc }}</span> Encrypt? &nbsp;&nbsp;&nbsp;<input type="checkbox" /> <br />
+            <span id="document name">{{ doc }}</span> Encrypt? &nbsp;&nbsp;&nbsp;<input id="{{ doc }}" type="checkbox" checked="{{doc.Is_Encrypted}}" /> <br />
         {% endfor %}
         <input id="files" name="files" type="file" multiple>
         <br>
