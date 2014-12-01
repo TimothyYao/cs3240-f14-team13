@@ -117,10 +117,15 @@ def handle_upload(request, bulletin):
                 upload = File()
                 upload.bulletin = bulletin
                 upload.File_Field = i
-                upload.save()
-#TODO if the file is flagged to be encryoted, encrypt before saving?
-                print upload.File_Field[i]
 
+                upload.save()
+
+                key = getKey("some password") #hash+pad key for 16,32,64?   TODO Do something else with KEY ! ! !
+                fileToEncrypt = upload.File_Field.path
+                encryptedOutput = upload.File_Field.name
+                encrypt_file(key, fileToEncrypt, encryptedOutput)   #Moved this to after Save. . .
+
+"""
 
             key = getKey("some password") #hash+pad key for 16,32,64?   TODO Do something else with KEY
 
@@ -130,7 +135,7 @@ def handle_upload(request, bulletin):
             someFileName2 = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\testPic.jpg"
             decrypt_file(key,someFileName2,  "decryptedTestPic.jpg" )  #TODO match file name and type when uploading.
             #  TODO If encruption = true for this file.  Encyrpt before storing loccally? Do what with keys?
-
+"""
 
 
 def index(request):
