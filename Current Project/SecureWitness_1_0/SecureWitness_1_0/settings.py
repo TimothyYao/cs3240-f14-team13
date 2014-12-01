@@ -84,7 +84,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/uploads/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "uploads"),
+    os.path.join(BASE_DIR, "uploads")
+    #'C:\Users\Alex\Django Sites\project2\cs3240-f14-team13\Current Project\SecureWitness_1_0\uploads',
+)
+
+print 'shit'
+print os.path.join(BASE_DIR, "uploads")
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),

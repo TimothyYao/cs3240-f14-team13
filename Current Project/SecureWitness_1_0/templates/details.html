@@ -25,11 +25,20 @@
     <h1 id="description header">Description:</h1>
     <p1 id="description text">{{ bulletin.Description }}</p1>
     <h1 id="document header">Documents:</h1>
+    {% load staticfiles %}
     {% if has_docs %}
         {% for doc in docs %}
-            <p1 id="document name">{{ doc }}<br></p1>
+            {% if doc.Is_Encrypted %}
+                {% if doc.permission %}
+                    <!--<p1 id="document name">{{ doc }}<br></p1>-->
+                    <a href="{% static doc.relative %}" download>{{ doc }}</a><br />
+                   <!-- <a href="{% static doc.File_Field.name %}">Download link</a> -->
+                {% endif %}
+            {% else %}
+                <a href="{% static doc.relative %}" download>{{ doc }}</a><br />
+            {% endif %}
         {% endfor %}
     {% else %}
-        <p1 id="document text">this bulletin has no documents</p1>
+        <p1 id="document text">This bulletin has no documents</p1>
     {% endif %}
 {% endblock content %}

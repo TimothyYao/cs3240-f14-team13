@@ -2,7 +2,7 @@
 
 {% block content %}
     <h1>Edit Bulletin</h1>
-    <form id="edit" METHOD="post">
+    <form id="edit" METHOD="post" enctype="multipart/form-data">
     {% csrf_token %}
         <p1>Title:</p1>
         <br>
@@ -22,9 +22,25 @@
         <br>
         <p1>Documents:</p1>
         <br>
+        <table border="1">
         {% for doc in docs %}
-            <p1 id="document name">{{ doc }}<br></p1>
+            <tr>
+                <td><span id="document name">{{ doc }}</span></td>
+                <td>Encrypt? &nbsp;&nbsp;&nbsp;&nbsp;<input id="encrypt{{ doc }}" name="encrypt{{ doc }}" type="checkbox" {% if doc.Is_Encrypted %} checked  {% endif %} /></td>
+                <td>
+                    Permissions: <br />
+                    {% for permission in doc.permissions %}
+                        {{ permission }}<br />
+                        Delete?&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="deletep{{ permission }}{{ doc }}" name="deletep{{ permission }}{{ doc }}" />
+                        <br /><br />
+                    {% endfor %}
+                </td>
+                <p>encrypt check: encrypt{{doc}}</p>
+                <td>New person: <input type="text" id="text{{ doc }}" name="text{{ doc }}" /></td>
+                <td>Delete?&nbsp;&nbsp;&nbsp;&nbsp;<input id="delete{{ doc }}" name="delete{{ doc }}" type="checkbox" /></td>
+            </tr>
         {% endfor %}
+        </table>
         <input id="files" name="files" type="file" multiple>
         <br>
         <br>
