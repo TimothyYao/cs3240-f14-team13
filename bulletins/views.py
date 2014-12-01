@@ -33,12 +33,21 @@ def copy_bulletin(bulletin):
     copy.Pseudonym = bulletin.Pseudonym
     copy.Location = bulletin.Location
     copy.Description = bulletin.Description
+    copy.folder = bulletin.folder
+    copy.save()
     docs = File.objects.filter(bulletin=bulletin)
     for doc in docs:
         file_copy = File()
         file_copy.bulletin = copy
         file_copy.File_Field = doc.File_Field
+        file_copy.Is_Encrypted = doc.Is_Encrypted
         file_copy.save()
+        permissions = Permission.objects.filter(FileID=doc)
+        for permission in permissions:
+            new_permission = Permission()
+            new_permission.FileID = file_copy
+            new_permission.UserID = permission.UserID
+            new_permission.save()
     return copy
 
 def handle_upload(request, bulletin):
@@ -130,15 +139,17 @@ def folder(request, folder_id):
 
 def create_subs(folder, copy):
     for folders in Folder.objects.filter(root=folder):
+        if folders.id == copy.id:
+            continue
         next = Folder()
         next.root = copy
-        next.owner = folder.owner
-        next.name = folder.name
+        next.owner = folders.owner
+        next.name = folders.name
         next.save()
-        for bulletin in Bulletin.objects.filter(folder=folder):
-            copy = copy_bulletin(bulletin)
-            copy.folder = next
-            copy.save()
+        for bulletin in Bulletin.objects.filter(folder=folders):
+            new_bulletin = copy_bulletin(bulletin)
+            new_bulletin.folder = next
+            new_bulletin.save()
         create_subs(folders, next)
 
 @login_required()
@@ -164,9 +175,7 @@ def details(request, bulletin_id):
             return HttpResponseRedirect('/bulletin/'+bulletin_id+'/edit/')
         elif 'copy' in request.POST:
             original = Bulletin.objects.get(pk=bulletin_id)
-            copy = copy_bulletin(original)
-            copy.folder = original.folder
-            copy.save()
+            copy_bulletin(original)
             return HttpResponseRedirect('/folder/'+str(original.folder.id)+'/')
         elif 'delete' in request.POST:
             Bulletin.objects.get(pk=bulletin_id).delete()
