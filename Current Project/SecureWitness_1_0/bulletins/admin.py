@@ -24,6 +24,6 @@ class BulletinAdmin(admin.ModelAdmin):
         })
     ]
     inlines = [FilesInline]
-    readonly_fields = ('Date',)
+    readonly_fields = ('Date', 'Title', 'Pseudonym', 'Location', 'Description')
 
 admin.site.register(Bulletin, BulletinAdmin)

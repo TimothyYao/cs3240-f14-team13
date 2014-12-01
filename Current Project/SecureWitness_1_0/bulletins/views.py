@@ -12,15 +12,30 @@ def recent_bulletins(recent=100):
     return latest_bulletins
 
 def delete_folder(folder):
-    bulletins = Folder.objects.filter(folder=folder)
+    bulletins = Bulletin.objects.filter(folder=folder)
     for bulletin in bulletins:
         bulletin.delete()
-    subfolders = Folder.objects.filter(root=folder).exclude(pk=folder.id)
+    subfolders = Folder.objects.filter(root=folder)
     for subfolder in subfolders:
         delete_folder(subfolder)
-    print 'deleting folder'
-    print folder.name
     folder.delete()
+
+def copy_bulletin(bulletin):
+    copy = Bulletin()
+    copy.Title = "" + bulletin.Title + " - copy"
+    copy.Author = bulletin.Author
+    copy.Pseudonym = bulletin.Pseudonym
+    copy.Location = bulletin.Location
+    copy.Description = bulletin.Description
+    copy.folder = bulletin.folder
+    docs = File.objects.filter(bulletin=bulletin)
+    copy.save()
+    for doc in docs:
+        file_copy = File()
+        file_copy.bulletin = copy
+        file_copy.File_Field = doc.File_Field
+        file_copy.save()
+    return copy
 
 def handle_upload(request, bulletin):
     if 'files' in request.FILES:
@@ -28,6 +43,7 @@ def handle_upload(request, bulletin):
                 upload = File()
                 upload.bulletin = bulletin
                 upload.File_Field = i
+                #TODO encrypt here
                 upload.save()
 
 def index(request):
@@ -60,9 +76,8 @@ def folder(request, folder_id):
         if 'bulletin' in request.POST:
             return HttpResponseRedirect('submit')
         elif 'delete' in request.POST:
-            pass
-            #delete_folder(folder)
-            #return HttpResponseRedirect('/myBulletins/')
+            delete_folder(folder)
+            return HttpResponseRedirect('/myBulletins/')
         elif 'folder' in request.POST:
             return HttpResponseRedirect('createFolder')
     bulletins = Bulletin.objects.filter(folder=folder)
@@ -91,8 +106,15 @@ def my_bulletins(request):
 @login_required()
 def details(request, bulletin_id):
     if request.method == 'POST':
-        if 'edit' in request.POST:
+        if 'folder' in request.POST:
+            folder_id = Bulletin.objects.get(pk=bulletin_id).folder.id
+            return HttpResponseRedirect('/folder/'+str(folder_id)+'/')
+        elif 'edit' in request.POST:
             return HttpResponseRedirect('/bulletin/'+bulletin_id+'/edit/')
+        elif 'copy' in request.POST:
+            original = Bulletin.objects.get(pk=bulletin_id)
+            copy_bulletin(original)
+            return HttpResponseRedirect('/folder/'+str(original.folder.id)+'/')
         elif 'delete' in request.POST:
             Bulletin.objects.get(pk=bulletin_id).delete()
             return HttpResponseRedirect('/')
@@ -174,6 +196,7 @@ def edit_bulletin(request, bulletin_id):
         bulletin.Location = request.POST["location"]
         bulletin.Description = request.POST["description"]
         bulletin.save()
+        handle_upload(request, bulletin)
         return HttpResponseRedirect('/bulletin/'+bulletin_id+'/')
     docs = File.objects.filter(bulletin=bulletin)
     return render(request, 'edit_bulletin.html', {
