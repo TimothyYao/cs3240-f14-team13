@@ -1,3 +1,4 @@
+from Crypto.Hash import SHA256
 from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.template import loader, Context, RequestContext
@@ -15,6 +16,13 @@ from bulletins.models import Bulletin, BulletinSearch, File, Folder
 
 import os, random, struct
 from Crypto.Cipher import AES
+
+
+def getKey(password):
+    hasher = SHA256.new(password)
+    return hasher.digest()
+
+
 
 def encrypt_file(key, in_filename, out_filename=None, chunksize=64*1024):
     """ Encrypts a file using AES (CBC mode) with the
@@ -109,13 +117,21 @@ def handle_upload(request, bulletin):
                 upload = File()
                 upload.bulletin = bulletin
                 upload.File_Field = i
-                ### JOHN DEPR TESTING ENCYPTION
-                #encrypt_file("Key Thing", upload, "test")
-                #TODO import old code that hashes a byteString of right side out of input.  for not hardcode to test.
-
-
-                #JOHN DERP END TESTING*****
                 upload.save()
+#TODO if the file is flagged to be encryoted, encrypt before saving?
+                print upload.File_Field[i]
+
+
+            key = getKey("some password") #hash+pad key for 16,32,64?   TODO Do something else with KEY
+
+            someFileName = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\2014\11\30\saint-heaven-map.jpg"
+            encrypt_file(key, someFileName, "testPic.jpg")
+
+            someFileName2 = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\testPic.jpg"
+            decrypt_file(key,someFileName2,  "decryptedTestPic.jpg" )  #TODO match file name and type when uploading.
+            #  TODO If encruption = true for this file.  Encyrpt before storing loccally? Do what with keys?
+
+
 
 def index(request):
     bulletins = recent_bulletins(recent=50)
