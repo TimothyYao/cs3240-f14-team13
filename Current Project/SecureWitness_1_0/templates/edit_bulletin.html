@@ -30,12 +30,14 @@
                 <td>
                     Permissions: <br />
                     {% for permission in doc.permissions %}
-                        <p>{{ permission }}</p>
+                        {{ permission }}<br />
+                        Delete?&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="deletep{{ permission }}{{ doc }}" name="deletep{{ permission }}{{ doc }}" />
+                        <br /><br />
                     {% endfor %}
                 </td>
                 <p>encrypt check: encrypt{{doc}}</p>
                 <td>New person: <input type="text" id="text{{ doc }}" name="text{{ doc }}" /></td>
-                <td>Delete?&nbsp;&nbsp;&nbsp;&nbsp;<input id="delete{{ doc }}" type="checkbox" /></td>
+                <td>Delete?&nbsp;&nbsp;&nbsp;&nbsp;<input id="delete{{ doc }}" name="delete{{ doc }}" type="checkbox" /></td>
             </tr>
         {% endfor %}
         </table>

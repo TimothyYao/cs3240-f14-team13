@@ -233,6 +233,8 @@ def edit_bulletin(request, bulletin_id):
         return HttpResponseRedirect('/bulletin/'+bulletin_id+'/')
 
     docs = File.objects.filter(bulletin=bulletin)
+    for doc in docs:
+        doc.permissions = Permission.objects.filter(FileID=doc.pk)
 
     if request.method == 'POST':
         if 'cancel' in request.POST:
@@ -262,7 +264,6 @@ def edit_bulletin(request, bulletin_id):
                     newPermission.save()
 
             #encrypt check
-
             encryptDictKey = 'encrypt' + doc.File_Field.name
             encrypted = False
             if encryptDictKey in request.POST.keys():
@@ -274,14 +275,38 @@ def edit_bulletin(request, bulletin_id):
             encryptObject.Is_Encrypted = encrypted
             encryptObject.save()
 
+            #permission delete
+            for permission in doc.permissions:
+                pDeleteKey = 'deletep' + permission.UserID.username + permission.FileID.File_Field.name
+                willDelete = False
+                if pDeleteKey in request.POST.keys():
+                    willDelete = True
+                else:
+                    willDelete = False
 
+                if willDelete:
+                    print 'willdelete: ' + 'deletep' + permission.UserID.username + permission.FileID.File_Field.name
+                    permission.delete()
+
+            #delete the file
+            deleteKey = 'delete' + doc.File_Field.name
+            deleteFile = False
+            if deleteKey in request.POST.keys():
+                deleteFile = True
+            else:
+                deleteFile = False
+
+            if deleteFile:
+                print 'deleting file!!!'
+                for permission in doc.permissions:
+                    permission.delete()
+
+                #TODO delete from hard disk!!
+                doc.delete()
 
 
         handle_upload(request, bulletin)
         return HttpResponseRedirect('/bulletin/'+bulletin_id+'/')
-
-    for doc in docs:
-        doc.permissions = Permission.objects.filter(FileID=doc.pk)
 
     return render(request, 'edit_bulletin.html', {
         'bulletin': bulletin,

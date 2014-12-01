@@ -62,4 +62,4 @@ class Permission(models.Model):
     UserID = models.ForeignKey(User)
     FileID = models.ForeignKey(File)
     def __unicode__(self):
-        return self.UserID.username + self.FileID.File_Field.name
+        return self.UserID.username
