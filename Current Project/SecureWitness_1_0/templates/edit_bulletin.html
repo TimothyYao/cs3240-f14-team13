@@ -26,8 +26,15 @@
         {% for doc in docs %}
             <tr>
                 <td><span id="document name">{{ doc }}</span></td>
-                <td>Encrypt? &nbsp;&nbsp;&nbsp;&nbsp;<input id="{{ doc }}" type="checkbox" checked="{{doc.Is_Encrypted}}" /></td>
-                <td>Permission1<br />Permission2<br />Permission3<br/></td>
+                <td>Encrypt? &nbsp;&nbsp;&nbsp;&nbsp;<input id="encrypt{{ doc }}" type="checkbox" checked="{{doc.Is_Encrypted}}" /></td>
+                <td>
+                    Permissions: <br />
+                    {% for permission in doc.permissions %}
+                        <p>{{ permission }}</p>
+                    {% endfor %}
+                </td>
+                <td>New person: <input type="text" id="text{{ doc }}" name="text{{ doc }}" /></td>
+                <td>Delete?&nbsp;&nbsp;&nbsp;&nbsp;<input id="delete{{ doc }}" type="checkbox" /></td>
             </tr>
         {% endfor %}
         </table>

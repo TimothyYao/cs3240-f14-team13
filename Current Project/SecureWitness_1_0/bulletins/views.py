@@ -193,6 +193,9 @@ def edit_bulletin(request, bulletin_id):
     bulletin = Bulletin.objects.get(pk=bulletin_id)
     if request.user != bulletin.Author:
         return HttpResponseRedirect('/bulletin/'+bulletin_id+'/')
+
+    docs = File.objects.filter(bulletin=bulletin)
+
     if request.method == 'POST':
         if 'cancel' in request.POST:
             return HttpResponseRedirect('/bulletin/'+bulletin_id+'/')
@@ -201,10 +204,31 @@ def edit_bulletin(request, bulletin_id):
         bulletin.Location = request.POST["location"]
         bulletin.Description = request.POST["description"]
         bulletin.save()
+
+        #updating input stuff
+
+        for doc in docs:
+            nameList = request.POST['text' + doc.File_Field.name].split(';')
+            for name in nameList:
+                if name == '': continue
+                newName = name.strip()
+                #create permission
+                print 'about to query user: ' + newName
+                newUser = User.objects.get(username=newName)
+                newPermission = Permission(UserID=newUser, FileID=doc)
+                check = Permission.objects.filter(UserID=newUser, FileID=doc)
+                if newUser is request.user:
+                    continue
+                if (check is None):
+                    newPermission.save()
+
+
+
         handle_upload(request, bulletin)
         return HttpResponseRedirect('/bulletin/'+bulletin_id+'/')
-    docs = File.objects.filter(bulletin=bulletin)
-    
+
+    for doc in docs:
+        doc.permissions = Permission.objects.filter(FileID=doc.pk)
 
     return render(request, 'edit_bulletin.html', {
         'bulletin': bulletin,
