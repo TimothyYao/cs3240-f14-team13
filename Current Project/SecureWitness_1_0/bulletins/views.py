@@ -69,25 +69,49 @@ def search(request):
 
 @login_required()
 def folder(request, folder_id):
-    folder = Folder.objects.get(pk=folder_id)
-    if request.user != folder.owner:
+    cur = Folder.objects.get(pk=folder_id)
+    if request.user != cur.owner:
         return HttpResponseRedirect('/')
     if request.method == 'POST':
         if 'bulletin' in request.POST:
             return HttpResponseRedirect('submit')
         elif 'delete' in request.POST:
-            delete_folder(folder)
+            delete_folder(cur)
             return HttpResponseRedirect('/myBulletins/')
         elif 'folder' in request.POST:
             return HttpResponseRedirect('createFolder')
-    bulletins = Bulletin.objects.filter(folder=folder)
-    folders = Folder.objects.filter(root=folder)
-    is_root = folder.root is None
+        elif 'copy' in request.POST:
+            pass
+        elif 'move' in request.POST:
+             if 'folder_select' in request.POST:
+                move_folder_id = request.POST['folder_select']
+                cur.root = Folder.objects.get(pk=move_folder_id)
+                cur.save()
+                HttpResponseRedirect('/folder/'+str(folder_id)+'/')
+    bulletins = Bulletin.objects.filter(folder=cur)
+    folders = Folder.objects.filter(root=cur)
+    folders_to_remove = []
+    subfolders = Folder.objects.filter(root=cur)
+    while len(subfolders) != 0:
+        subfolders_temp = []
+        for folder in subfolders:
+            folders_to_remove.append(folder)
+            for sub in Folder.objects.filter(root=folder):
+                subfolders_temp.append(sub)
+        subfolders = subfolders_temp
+    all_folders = Folder.objects.filter(owner=request.user)
+    for removed in folders_to_remove:
+        all_folders = all_folders.exclude(pk=removed.id)
+    all_folders = all_folders.exclude(pk=cur.id)
+    if cur.root != None:
+        all_folders = all_folders.exclude(pk=cur.root.id)
+    is_root = cur.root is None
     return render(request, 'folder.html', {
-        'folder': folder,
+        'folder': cur,
         'bulletins': bulletins,
         'folders': folders,
-        'is_root': is_root
+        'is_root': is_root,
+        'all_folders': all_folders
     })
 
 @login_required()
@@ -119,17 +143,26 @@ def details(request, bulletin_id):
             Bulletin.objects.get(pk=bulletin_id).delete()
             return HttpResponseRedirect('/')
         elif 'move' in request.POST:
-            print 'move'
+            if 'folder_select' in request.POST:
+                move_folder_id = request.POST['folder_select']
+                bulletin = Bulletin.objects.get(pk=bulletin_id)
+                bulletin.folder = Folder.objects.get(pk=move_folder_id)
+                bulletin.save()
+                HttpResponseRedirect('/bulletin/'+str(bulletin_id)+'/')
     bulletin = Bulletin.objects.get(pk=bulletin_id)
     docs = File.objects.filter(bulletin=bulletin)
     has_docs = len(docs) > 0
     owner = request.user == bulletin.Author
+    folders = Folder.objects.filter(owner=bulletin.Author)
     return render(request, 'details.html', {
         'bulletin': bulletin,
         'owner': owner,
         'docs': docs,
-        'has_docs': has_docs
+        'has_docs': has_docs,
+        'folders': folders
     })
+
+
 
 def register(request):
     message = 'Create User'
