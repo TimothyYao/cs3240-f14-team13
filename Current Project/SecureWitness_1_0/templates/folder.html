@@ -13,7 +13,16 @@
         {% endfor %}
         <br>
         <input type="submit" name="folder" value="create folder">
-        <input type="submit" name="delete"  value="delete folder" onclick="return confirm('Are you sure you want delete this folder and all its contents?')"><br>
+        <input type="submit" name="delete"  value="delete" onclick="return confirm('Are you sure you want delete this folder and all its contents?')">
+        <input type="submit" name="copy" value="copy">
+        <input type="submit" name="move" value="move">
+        <select name="folder_select">
+            <option selected="selected" disabled>Choose folder</option>
+                {% for folder in all_folders %}
+                    <option value="{{ folder.id }}">{{ folder.name }}</option>
+                {% endfor %}
+            </select>
+        <br>
         <br>
         <p1>bulletins:<br></p1>
         {% for bulletin in bulletins %}
