@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.template import loader, Context, RequestContext
@@ -5,7 +6,8 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from bulletins.models import Bulletin, BulletinSearch, File, Folder
+from models import Bulletin, BulletinSearch, File, Folder, Permission
+#from bulletins.models import Bulletin, BulletinSearch, File, Folder
 
 def recent_bulletins(recent=100):
     latest_bulletins = Bulletin.objects.all().order_by('-Date')[:recent]
@@ -174,9 +176,17 @@ def details(request, bulletin_id):
                 HttpResponseRedirect('/bulletin/'+str(bulletin_id)+'/')
     bulletin = Bulletin.objects.get(pk=bulletin_id)
     docs = File.objects.filter(bulletin=bulletin)
+    for doc in docs:
+        print doc.File_Field.path
+        doc.relative = os.path.basename(doc.File_Field.name)
     has_docs = len(docs) > 0
     owner = request.user == bulletin.Author
+
+    for doc in docs:
+        doc.permission = (len(Permission.objects.filter(UserID=request.user, FileID=doc)) > 0 or owner)
+
     folders = Folder.objects.filter(owner=bulletin.Author)
+
     return render(request, 'details.html', {
         'bulletin': bulletin,
         'owner': owner,
@@ -244,6 +254,11 @@ def edit_bulletin(request, bulletin_id):
     bulletin = Bulletin.objects.get(pk=bulletin_id)
     if request.user != bulletin.Author:
         return HttpResponseRedirect('/bulletin/'+bulletin_id+'/')
+
+    docs = File.objects.filter(bulletin=bulletin)
+    for doc in docs:
+        doc.permissions = Permission.objects.filter(FileID=doc.pk)
+
     if request.method == 'POST':
         if 'cancel' in request.POST:
             return HttpResponseRedirect('/bulletin/'+bulletin_id+'/')
@@ -252,9 +267,70 @@ def edit_bulletin(request, bulletin_id):
         bulletin.Location = request.POST["location"]
         bulletin.Description = request.POST["description"]
         bulletin.save()
+
+        #updating input stuff
+
+        for doc in docs:
+            #name permission
+            nameList = request.POST['text' + doc.File_Field.name].split(';')
+            for name in nameList:
+                if name == '': continue
+                newName = name.strip()
+                #create permission
+                print 'about to query user: ' + newName
+                newUser = User.objects.get(username=newName)
+                newPermission = Permission(UserID=newUser, FileID=doc)
+                check = Permission.objects.filter(UserID=newUser, FileID=doc)
+                if newUser is request.user:
+                    continue
+                if (len(check) == 0):
+                    newPermission.save()
+
+            #encrypt check
+            encryptDictKey = 'encrypt' + doc.File_Field.name
+            encrypted = False
+            if encryptDictKey in request.POST.keys():
+                encrypted = True
+            else:
+                encrypted = False
+
+            encryptObject = File.objects.get(pk=doc.pk)
+            encryptObject.Is_Encrypted = encrypted
+            encryptObject.save()
+
+            #permission delete
+            for permission in doc.permissions:
+                pDeleteKey = 'deletep' + permission.UserID.username + permission.FileID.File_Field.name
+                willDelete = False
+                if pDeleteKey in request.POST.keys():
+                    willDelete = True
+                else:
+                    willDelete = False
+
+                if willDelete:
+                    print 'willdelete: ' + 'deletep' + permission.UserID.username + permission.FileID.File_Field.name
+                    permission.delete()
+
+            #delete the file
+            deleteKey = 'delete' + doc.File_Field.name
+            deleteFile = False
+            if deleteKey in request.POST.keys():
+                deleteFile = True
+            else:
+                deleteFile = False
+
+            if deleteFile:
+                print 'deleting file!!!'
+                for permission in doc.permissions:
+                    permission.delete()
+
+                #TODO delete from hard disk!!
+                doc.delete()
+
+
         handle_upload(request, bulletin)
         return HttpResponseRedirect('/bulletin/'+bulletin_id+'/')
-    docs = File.objects.filter(bulletin=bulletin)
+
     return render(request, 'edit_bulletin.html', {
         'bulletin': bulletin,
         'docs': docs

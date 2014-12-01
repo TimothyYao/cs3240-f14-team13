@@ -52,7 +52,14 @@ class Bulletin(models.Model):
 
 class File(models.Model):
     bulletin = models.ForeignKey(Bulletin)
-    File_Field = models.FileField(upload_to='uploads/%Y/%m/%d')
+    File_Field = models.FileField(upload_to='uploads/')
+    Is_Encrypted = models.BooleanField(default=True)
 
     def __unicode__(self):
         return self.File_Field.name
+
+class Permission(models.Model):
+    UserID = models.ForeignKey(User)
+    FileID = models.ForeignKey(File)
+    def __unicode__(self):
+        return self.UserID.username
