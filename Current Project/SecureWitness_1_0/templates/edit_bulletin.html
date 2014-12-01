@@ -22,9 +22,15 @@
         <br>
         <p1>Documents:</p1>
         <br>
+        <table border="1">
         {% for doc in docs %}
-            <span id="document name">{{ doc }}</span> Encrypt? &nbsp;&nbsp;&nbsp;<input id="{{ doc }}" type="checkbox" checked="{{doc.Is_Encrypted}}" /> <br />
+            <tr>
+                <td><span id="document name">{{ doc }}</span></td>
+                <td>Encrypt? &nbsp;&nbsp;&nbsp;&nbsp;<input id="{{ doc }}" type="checkbox" checked="{{doc.Is_Encrypted}}" /></td>
+                <td>Permission1<br />Permission2<br />Permission3<br/></td>
+            </tr>
         {% endfor %}
+        </table>
         <input id="files" name="files" type="file" multiple>
         <br>
         <br>

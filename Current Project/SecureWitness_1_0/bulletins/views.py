@@ -204,6 +204,7 @@ def edit_bulletin(request, bulletin_id):
         handle_upload(request, bulletin)
         return HttpResponseRedirect('/bulletin/'+bulletin_id+'/')
     docs = File.objects.filter(bulletin=bulletin)
+    
 
     return render(request, 'edit_bulletin.html', {
         'bulletin': bulletin,
