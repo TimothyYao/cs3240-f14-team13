@@ -6,8 +6,12 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from models import Bulletin, BulletinSearch, File, Folder, Permission
+from models import Bulletin, BulletinSearch, File, Folder, Permission  #TODO WAS THIS, trying fix. . .
 #from bulletins.models import Bulletin, BulletinSearch, File, Folder
+
+
+#from bulletins.models import Bulletin, Folder, File, Permission
+
 
 def recent_bulletins(recent=100):
     latest_bulletins = Bulletin.objects.all().order_by('-Date')[:recent]
@@ -125,7 +129,7 @@ def folder(request, folder_id):
     })
 
 def create_subs(folder, copy):
-    for folders in Folder.objects.filter(root=folder)
+    for folders in Folder.objects.filter(root=folder):
         next = Folder()
         next.root = copy
         next.owner = folder.owner
