@@ -6,8 +6,12 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from models import Bulletin, BulletinSearch, File, Folder, Permission
+from models import Bulletin, BulletinSearch, File, Folder, Permission  #TODO WAS THIS, trying fix. . .
 #from bulletins.models import Bulletin, BulletinSearch, File, Folder
+
+
+#from bulletins.models import Bulletin, Folder, File, Permission
+
 
 def recent_bulletins(recent=100):
     latest_bulletins = Bulletin.objects.all().order_by('-Date')[:recent]
@@ -29,9 +33,7 @@ def copy_bulletin(bulletin):
     copy.Pseudonym = bulletin.Pseudonym
     copy.Location = bulletin.Location
     copy.Description = bulletin.Description
-    copy.folder = bulletin.folder
     docs = File.objects.filter(bulletin=bulletin)
-    copy.save()
     for doc in docs:
         file_copy = File()
         file_copy.bulletin = copy
@@ -83,13 +85,23 @@ def folder(request, folder_id):
         elif 'folder' in request.POST:
             return HttpResponseRedirect('createFolder')
         elif 'copy' in request.POST:
-            pass
+            next = Folder()
+            next.root = cur
+            next.owner = cur.owner
+            next.name = cur.name
+            next.save()
+            for bulletin in Bulletin.objects.filter(folder=cur):
+                copy = copy_bulletin(bulletin)
+                copy.folder = next
+                copy.save()
+            create_subs(cur, next)
+            return HttpResponseRedirect('/folder/'+str(cur.id)+'/')
         elif 'move' in request.POST:
-             if 'folder_select' in request.POST:
+            if 'folder_select' in request.POST:
                 move_folder_id = request.POST['folder_select']
                 cur.root = Folder.objects.get(pk=move_folder_id)
                 cur.save()
-                HttpResponseRedirect('/folder/'+str(folder_id)+'/')
+                return HttpResponseRedirect('/folder/'+str(folder_id)+'/')
     bulletins = Bulletin.objects.filter(folder=cur)
     folders = Folder.objects.filter(root=cur)
     folders_to_remove = []
@@ -116,6 +128,19 @@ def folder(request, folder_id):
         'all_folders': all_folders
     })
 
+def create_subs(folder, copy):
+    for folders in Folder.objects.filter(root=folder):
+        next = Folder()
+        next.root = copy
+        next.owner = folder.owner
+        next.name = folder.name
+        next.save()
+        for bulletin in Bulletin.objects.filter(folder=folder):
+            copy = copy_bulletin(bulletin)
+            copy.folder = next
+            copy.save()
+        create_subs(folders, next)
+
 @login_required()
 def my_bulletins(request):
     folders = Folder.objects.filter(owner=request.user, name='root')
@@ -139,7 +164,9 @@ def details(request, bulletin_id):
             return HttpResponseRedirect('/bulletin/'+bulletin_id+'/edit/')
         elif 'copy' in request.POST:
             original = Bulletin.objects.get(pk=bulletin_id)
-            copy_bulletin(original)
+            copy = copy_bulletin(original)
+            copy.folder = original.folder
+            copy.save()
             return HttpResponseRedirect('/folder/'+str(original.folder.id)+'/')
         elif 'delete' in request.POST:
             Bulletin.objects.get(pk=bulletin_id).delete()
