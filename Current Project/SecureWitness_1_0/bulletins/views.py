@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.template import loader, Context, RequestContext
@@ -152,6 +153,9 @@ def details(request, bulletin_id):
                 HttpResponseRedirect('/bulletin/'+str(bulletin_id)+'/')
     bulletin = Bulletin.objects.get(pk=bulletin_id)
     docs = File.objects.filter(bulletin=bulletin)
+    for doc in docs:
+        print doc.File_Field.path
+        doc.relative = os.path.basename(doc.File_Field.name)
     has_docs = len(docs) > 0
     owner = request.user == bulletin.Author
 
@@ -242,6 +246,7 @@ def edit_bulletin(request, bulletin_id):
         #updating input stuff
 
         for doc in docs:
+            #name permission
             nameList = request.POST['text' + doc.File_Field.name].split(';')
             for name in nameList:
                 if name == '': continue
@@ -253,8 +258,22 @@ def edit_bulletin(request, bulletin_id):
                 check = Permission.objects.filter(UserID=newUser, FileID=doc)
                 if newUser is request.user:
                     continue
-                if (check is None):
+                if (len(check) == 0):
                     newPermission.save()
+
+            #encrypt check
+
+            encryptDictKey = 'encrypt' + doc.File_Field.name
+            encrypted = False
+            if encryptDictKey in request.POST.keys():
+                encrypted = True
+            else:
+                encrypted = False
+
+            encryptObject = File.objects.get(pk=doc.pk)
+            encryptObject.Is_Encrypted = encrypted
+            encryptObject.save()
+
 
 
 
