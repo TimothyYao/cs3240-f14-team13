@@ -2,7 +2,7 @@
 
 {% block content %}
     <h1>Edit Bulletin</h1>
-    <form id="edit" METHOD="post">
+    <form id="edit" METHOD="post" enctype="multipart/form-data">
     {% csrf_token %}
         <p1>Title:</p1>
         <br>
@@ -23,7 +23,7 @@
         <p1>Documents:</p1>
         <br>
         {% for doc in docs %}
-            <p1 id="document name">{{ doc }}<br></p1>
+            <span id="document name">{{ doc }}</span> Encrypt? &nbsp;&nbsp;&nbsp;<input type="checkbox" /> <br />
         {% endfor %}
         <input id="files" name="files" type="file" multiple>
         <br>
