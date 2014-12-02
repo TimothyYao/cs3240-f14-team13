@@ -12,6 +12,7 @@
             <a href = "/folder/{{ subfolder.id }}/">{{ subfolder.name }}</a><br>
         {% endfor %}
         <br>
+        <input type="submit" name="rename" value="rename">
         <input type="submit" name="folder" value="create folder">
         <input type="submit" name="delete"  value="delete" onclick="return confirm('Are you sure you want delete this folder and all its contents?')">
         <input type="submit" name="copy" value="copy">

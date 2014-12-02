@@ -91,6 +91,8 @@ def folder(request, folder_id):
         elif 'delete' in request.POST:
             delete_folder(cur)
             return HttpResponseRedirect('/myBulletins/')
+        elif 'rename' in request.POST:
+            return HttpResponseRedirect('/folder/'+str(folder_id)+'/edit/')
         elif 'folder' in request.POST:
             return HttpResponseRedirect('createFolder')
         elif 'copy' in request.POST:
@@ -136,6 +138,18 @@ def folder(request, folder_id):
         'is_root': is_root,
         'all_folders': all_folders
     })
+
+@login_required()
+def rename_folder(request, folder_id):
+    cur = Folder.objects.get(pk=folder_id)
+    if request.user != cur.owner:
+        return HttpResponseRedirect('/')
+    if request.method == 'POST':
+        folder = Folder.objects.get(pk=folder_id)
+        folder.name = request.POST['name']
+        folder.save()
+        return HttpResponseRedirect('/folder/'+str(folder_id)+'/')
+    return render(request, 'rename_folder.html')
 
 def create_subs(folder, copy):
     for folders in Folder.objects.filter(root=folder):

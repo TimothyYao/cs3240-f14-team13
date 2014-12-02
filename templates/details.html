@@ -19,7 +19,8 @@
         </form>
     {% endif %}
     <h1 id="title">{{ bulletin.Title }}</h1>
-    <p1 id="author">by: {{ bulletin.Pseudonym }}</p1>
+    <p1 id="author">by: {{ bulletin.Pseudonym }}</p1><br>
+    <p1 id="date">created at: {{ bulletin.Date }}</p1>
     <h1 id="location header">Location:</h1>
     <p1 id="location text">{{ bulletin.Location }}</p1>
     <h1 id="description header">Description:</h1>

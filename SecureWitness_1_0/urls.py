@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     url(r'^myBulletins/$', 'bulletins.views.my_bulletins'),
     url(r'^folder/(?P<folder_id>\d+)/$', 'bulletins.views.folder'),
     url(r'^folder/(?P<folder_id>\d+)/submit/$', 'bulletins.views.submit'),
+    url(r'^folder/(?P<folder_id>\d+)/edit/$', 'bulletins.views.rename_folder'),
     url(r'^folder/(?P<folder_id>\d+)/createFolder/$', 'bulletins.views.create_folder'),
     url(r'submit/$', 'bulletins.views.submit'),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
