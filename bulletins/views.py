@@ -19,6 +19,10 @@ from Crypto.Cipher import AES
 
 
 
+import os
+#os.environ['PYTHON_EGG_CACHE'] = '/usr/local/pylons/python-eggs'
+os.environ['PYTHON_EGG_CACHE'] = '/tmp'   #TODO remove this if un-needed.  Only adding to match my other working project.
+
 
 
 def getKey(password):
@@ -94,9 +98,14 @@ def decrypt_file(key, in_filename, out_filename=None, chunksize=24*1024):
                 chunk = infile.read(chunksize)
                 if len(chunk) == 0:
                     break
+                elif len(chunk) % 16 != 0:  #JOHN ADDD
+                    chunk += ' ' * (16 - len(chunk) % 16)  #JOHN ADDED
+
                 outfile.write(decryptor.decrypt(chunk))
 
             outfile.truncate(origsize)
+
+
 
 
 
@@ -153,19 +162,43 @@ def handle_upload(request, bulletin):
                 upload.save()
 
 
-                key = getKey("some password") #hash+pad key for 16,32,64?   TODO Do something else with KEY ! ! !
-                fileToEncrypt = upload.File_Field.path
-                encryptedOutput = upload.File_Field.name
+
+                fileToEncrypt = upload.File_Field.path  #WAS THIS . . . temp hard coding . .
+
+                encryptedOutput = upload.File_Field.name #TODO temp setting to  inMagic
+
 
                 print "The path and name of the uploaded file to encrypt are: "
                 print fileToEncrypt
                 print encryptedOutput
-                print "The hashed key to encrypt was: "  #If different must store?.
-                print key
-                encrypt_file(MASTER_KEY, fileToEncrypt, encryptedOutput)   #Moved this to after Save. . .
 
-                #TODO temp decrypting right after to test that the method even works. .
-                decrypt_file(MASTER_KEY, fileToEncrypt,  encryptedOutput )
+                encrypt_file(MASTER_KEY, fileToEncrypt, encryptedOutput)   #Moved this to after Save. . .
+                print "After enrypted, path is. . ."
+                print upload.File_Field._get_path
+
+
+                decrypt_file(MASTER_KEY, fileToEncrypt,  encryptedOutput ) #Does it blend?
+                # tempForceOutPath = r"uploads/NoSpace.png"
+                # decrypt_file(MASTER_KEY, tempForceOutPath,  "TOMATO2.png" ) #Does it blend?
+
+
+                alternatePath = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\damnit.png"
+                alternatePath = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\damnit.png"
+                decrypt_file(MASTER_KEY, alternatePath,  "TOMATO_X.png" ) #Does it blend?
+
+                # """ THIS WORKS for hard code and filez. . . BELOW"""
+                # fileToEncrypt = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\castle01.jpg"
+                # encryptedOutput = "In_RAGE.jpg"
+                # encrypt_file(MASTER_KEY, fileToEncrypt, encryptedOutput)
+                # dec_in = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\In_RAGE.jpg"
+                # tempOut = "Out_RAGE.jpg"
+                # decrypt_file(MASTER_KEY, dec_in,  tempOut )
+
+
+
+
+
+
 
 
 def index(request):
@@ -277,6 +310,17 @@ def create_subs(folder, copy):
 
 @login_required()
 def my_bulletins(request):
+
+    #JOHN TEMP DERPING!!!
+    fileToEncrypt = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\castle01.jpg"
+    encryptedOutput = "In.jpg"
+
+    encrypt_file(MASTER_KEY, fileToEncrypt, encryptedOutput)
+
+    pathToIn = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\In.jpg"
+    decrypt_file(MASTER_KEY, pathToIn,  "Out.jpg" )
+
+    #END JOHN TEMP DERPING!!!
     folders = Folder.objects.filter(owner=request.user, name='root')
     if len(folders) == 0:
         folder = Folder()
