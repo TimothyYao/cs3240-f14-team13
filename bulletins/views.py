@@ -18,10 +18,14 @@ import os, random, struct
 from Crypto.Cipher import AES
 
 
+
+
+
 def getKey(password):
     hasher = SHA256.new(password)
     return hasher.digest()
 
+MASTER_KEY = getKey("some password")    #TODO NOTE< this may break files when server restarts and it generates a new random key
 
 
 def encrypt_file(key, in_filename, out_filename=None, chunksize=64*1024):
@@ -152,7 +156,16 @@ def handle_upload(request, bulletin):
                 key = getKey("some password") #hash+pad key for 16,32,64?   TODO Do something else with KEY ! ! !
                 fileToEncrypt = upload.File_Field.path
                 encryptedOutput = upload.File_Field.name
-                encrypt_file(key, fileToEncrypt, encryptedOutput)   #Moved this to after Save. . .
+
+                print "The path and name of the uploaded file to encrypt are: "
+                print fileToEncrypt
+                print encryptedOutput
+                print "The hashed key to encrypt was: "  #If different must store?.
+                print key
+                encrypt_file(MASTER_KEY, fileToEncrypt, encryptedOutput)   #Moved this to after Save. . .
+
+                #TODO temp decrypting right after to test that the method even works. .
+                decrypt_file(MASTER_KEY, fileToEncrypt,  encryptedOutput )
 
 
 def index(request):
@@ -412,14 +425,46 @@ def edit_bulletin(request, bulletin_id):
             #encrypt check
             encryptDictKey = 'encrypt' + doc.File_Field.name
             encrypted = False
+
+            key = getKey("some password")  # TODO is this hash always the same?..
+            print "The hashed key for edit bulletin is:"
+            print key
+
+
             if encryptDictKey in request.POST.keys():
                 encrypted = True
+                print "POST WAS TRUE"
+
+                # #TODO if file is not encrypted, then ENCRYPT.
+                # if doc.Is_Encrypted == True:
+                #     encrypt_file()
+
+                # fileToEncrypt = doc.File_Field.path
+                # encryptedOutput = doc.File_Field.name
+                # encrypt_file(key, fileToEncrypt, encryptedOutput)
+
             else:
-                encrypted = False
+                encrypted = False  #Then decrypt if it's not already*
+                #todo if file is ...?
+                print "POST WAS FALSE"
+                print "WAS FILE object's isEncrypted field true?"
+                if doc.Is_Encrypted == True:
+                    print "model was encrypted"
+                    fileToDecrypt = doc.File_Field.path
+                    decryptedOutput = doc.File_Field.name
+                    print "file to decrypt's path is . . ."
+                    print fileToDecrypt
+                    print "file to decrypt's name is . . ."
+                    print decryptedOutput
+                    #####decrypt_file(MASTER_KEY,fileToDecrypt,  decryptedOutput )
+                    decrypt_file(MASTER_KEY, fileToDecrypt,  "MAGICK.png" )
+                    print "File should be decrypted now. . ."
+
 
             encryptObject = File.objects.get(pk=doc.pk)
             encryptObject.Is_Encrypted = encrypted
-            encryptObject.save()
+            encryptObject.save()  #TODO move this inside ifs or leave?
+            print "encrpyObject.save has been called"
 
             #permission delete
             for permission in doc.permissions:
