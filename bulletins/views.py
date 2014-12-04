@@ -18,7 +18,7 @@ import os, random, struct
 from Crypto.Cipher import AES
 
 
-
+import shutil
 import os
 #os.environ['PYTHON_EGG_CACHE'] = '/usr/local/pylons/python-eggs'
 os.environ['PYTHON_EGG_CACHE'] = '/tmp'   #TODO remove this if un-needed.  Only adding to match my other working project.
@@ -158,6 +158,7 @@ def handle_upload(request, bulletin):
                 print "for i in requests.Files, where i = "
                 print i
                 upload = File()
+
                 upload.bulletin = bulletin
                 upload.File_Field = i
                 #TODO encrypt here
@@ -173,6 +174,34 @@ def handle_upload(request, bulletin):
                 fileToEncrypt = upload.File_Field.path  #WAS THIS . . . temp hard coding . .
 
                 encryptedOutput = upload.File_Field.name #TODO temp setting to  inMagic
+
+
+                pathForTemp = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\TEMP"
+                encrypt_file(MASTER_KEY, fileToEncrypt, "tempFile")
+                os.remove(fileToEncrypt)
+                shutil.copyfile("tempFile", fileToEncrypt)  #copy then rename . . .
+                os.remove("tempFile")
+
+                #TODO encrypt to a new temp, delete the old location, save the file to the old location.  Then delete the temp file!
+                # upload.delete()
+                #
+                # upload = File()
+                # upload.bulletin = bulletin
+                # upload.File_Field = i
+
+
+
+#---------------------------------now testing decrypt and replace!------------
+
+                decrypt_file(MASTER_KEY, fileToEncrypt, "tempFile")
+                os.remove(fileToEncrypt)
+                shutil.copyfile("tempFile", fileToEncrypt)  #copy then rename . . .
+                os.remove("tempFile")
+
+            #TODO THEN TEST DECRYPTING< with thesame copy and replace technique.
+#------------------------------end decrypt and replace.  -------------------------
+
+
                 print "---------------------"
 
                 # print "The path and name of the uploaded file to encrypt are: "
@@ -185,10 +214,20 @@ def handle_upload(request, bulletin):
                 #
                 #
                 # decrypt_file(MASTER_KEY, fileToEncrypt,  encryptedOutput ) #Does it blend?
-                # tempForceOutPath = r"uploads/NoSpace.png"
+                # tempForceOutPath = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\Puff6_in.jpg"
+                # tempForceOutPath2 = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\Puff6_DECRYPTED.jpg"
+                #
+                # encrypt_file(MASTER_KEY, fileToEncrypt, tempForceOutPath)
+                # decrypt_file(MASTER_KEY, tempForceOutPath,  tempForceOutPath2 ) #### THIS ONE SHOULD WORK !!!!
 
-                encrypt_file(MASTER_KEY, fileToEncrypt, fileToEncrypt)
-                decrypt_file(MASTER_KEY, fileToEncrypt,  fileToEncrypt ) #### THIS ONE SHOULD WORK !!!!
+                #TODO delete file that's stored in fileToEncrypt's path. . .
+
+
+                # encrypt_file(MASTER_KEY, fileToEncrypt, "Puff3_in.jpg")
+                # pathOut = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\Puff3_in.jpg"
+                # pathOut2 = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\Puff3.jpg"
+                # decrypt_file(MASTER_KEY, pathOut,  pathOut2 ) #### THIS ONE SHOULD WORK !!!!
+
 
                 #
                 # alternatePath = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\damnit.png"
@@ -336,42 +375,42 @@ def create_subs(folder, copy):
 @login_required()
 def my_bulletins(request):
 
-    #JOHN TEMP DERPING!!!
-    fileToEncrypt = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\castle01.jpg"
-    encryptedOutput = "In.jpg"
-    encrypt_file(MASTER_KEY, fileToEncrypt, encryptedOutput)
-    pathToIn = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\In.jpg"
-    decrypt_file(MASTER_KEY, pathToIn,  "Out.jpg" )
-
-
-    #Now doing a file inside the Uploads folder.. .
-
-    START = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\castle01.jpg"
-    MIDDLE = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\castle_IN.jpg"
-    encrypt_file(MASTER_KEY, START, MIDDLE)
-    END = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\castle_OUT.jpg"
-    decrypt_file(MASTER_KEY, MIDDLE,  END )  #Does this have access to and see files in here?
-                                            #How about files created by .save and not just dropped in?
-    #TODO  ^^ TEST THAT NEXT TO RULE OUT .SAVE BEING ISSUE>
-
-
-   #  NOW TESTING A FILE THAT WAS CREATED BY THE SAVE METHOD.  #TODO Then how about one being made at runtime?
-#TODO THIS ONE FAILED!!!  trying one created encryped by my other program and dropped in.  . next
-    #START = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\PuffGod.jpg"
-    MIDDLE = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\PuffGod.jpg"
-    #encrypt_file(MASTER_KEY, START, MIDDLE)
-    END = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\PuffGod_OUT.jpg"
-    decrypt_file(MASTER_KEY, MIDDLE,  END )  #Does this have access to and see files in here?
-                                            #How about files created by .save and not just dropped in?
-
-
-    MIDDLE = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\in_X.png"
-    #encrypt_file(MASTER_KEY, START, MIDDLE)
-    END = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\out_X.png"
-    decrypt_file(MASTER_KEY, MIDDLE,  END )  #Does this have access to and see files
-
-    #TODO SEE IF YOU CAN EVER DECRYPT A FILE CREATED WITH .SAVE() .  . ENCRYPTION (SEEMS) TO WORK tough which is odd.
-    #TODO TEST UPLOAD_ME.txt to see if same result in plzWork and here.    
+#     #JOHN TEMP DERPING!!!
+#     fileToEncrypt = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\castle01.jpg"
+#     encryptedOutput = "In.jpg"
+#     encrypt_file(MASTER_KEY, fileToEncrypt, encryptedOutput)
+#     pathToIn = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\In.jpg"
+#     decrypt_file(MASTER_KEY, pathToIn,  "Out.jpg" )
+#
+#
+#     #Now doing a file inside the Uploads folder.. .
+#
+#     START = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\castle01.jpg"
+#     MIDDLE = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\castle_IN.jpg"
+#     encrypt_file(MASTER_KEY, START, MIDDLE)
+#     END = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\castle_OUT.jpg"
+#     decrypt_file(MASTER_KEY, MIDDLE,  END )  #Does this have access to and see files in here?
+#                                             #How about files created by .save and not just dropped in?
+#     #TODO  ^^ TEST THAT NEXT TO RULE OUT .SAVE BEING ISSUE>
+#
+#
+#    #  NOW TESTING A FILE THAT WAS CREATED BY THE SAVE METHOD.  #TODO Then how about one being made at runtime?
+# #TODO THIS ONE FAILED!!!  trying one created encryped by my other program and dropped in.  . next
+#     #START = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\PuffGod.jpg"
+#     MIDDLE = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\PuffGod.jpg"
+#     #encrypt_file(MASTER_KEY, START, MIDDLE)
+#     END = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\PuffGod_OUT.jpg"
+#     decrypt_file(MASTER_KEY, MIDDLE,  END )  #Does this have access to and see files in here?
+#                                             #How about files created by .save and not just dropped in?
+#
+#
+#     MIDDLE = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\in_X.png"
+#     #encrypt_file(MASTER_KEY, START, MIDDLE)
+#     END = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\out_X.png"
+#     decrypt_file(MASTER_KEY, MIDDLE,  END )  #Does this have access to and see files
+#
+#     #TODO SEE IF YOU CAN EVER DECRYPT A FILE CREATED WITH .SAVE() .  . ENCRYPTION (SEEMS) TO WORK tough which is odd.
+#     #TODO TEST UPLOAD_ME.txt to see if same result in plzWork and here.
 
 
 
