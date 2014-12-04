@@ -92,7 +92,7 @@ STATICFILES_DIRS = (
     #'C:\Users\Alex\Django Sites\project2\cs3240-f14-team13\Current Project\SecureWitness_1_0\uploads',
 )
 
-print 'shit'
+#print 'shit'
 print os.path.join(BASE_DIR, "uploads")
 
 TEMPLATE_DIRS = (
