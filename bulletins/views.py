@@ -165,6 +165,7 @@ def handle_upload(request, bulletin):
                 print upload.File_Field.path
                 print upload.File_Field.name
                 upload.save()
+
                 print "Path and name AFTER save: "
                 print upload.File_Field.path
                 print upload.File_Field.name
@@ -174,36 +175,38 @@ def handle_upload(request, bulletin):
                 encryptedOutput = upload.File_Field.name #TODO temp setting to  inMagic
                 print "---------------------"
 
-                print "The path and name of the uploaded file to encrypt are: "
-                print fileToEncrypt
-                print encryptedOutput
-
-                encrypt_file(MASTER_KEY, fileToEncrypt, encryptedOutput)   #Moved this to after Save. . .
-                print "After enrypted, path is. . ."
-                print upload.File_Field._get_path
-
-
-                decrypt_file(MASTER_KEY, fileToEncrypt,  encryptedOutput ) #Does it blend?
+                # print "The path and name of the uploaded file to encrypt are: "
+                # print fileToEncrypt
+                # print encryptedOutput
+                #
+                # encrypt_file(MASTER_KEY, fileToEncrypt, encryptedOutput)   #Moved this to after Save. . .
+                # print "After enrypted, path is. . ."
+                # print upload.File_Field._get_path
+                #
+                #
+                # decrypt_file(MASTER_KEY, fileToEncrypt,  encryptedOutput ) #Does it blend?
                 # tempForceOutPath = r"uploads/NoSpace.png"
-                # decrypt_file(MASTER_KEY, tempForceOutPath,  "TOMATO2.png" ) #Does it blend?
 
+                encrypt_file(MASTER_KEY, fileToEncrypt, fileToEncrypt)
+                decrypt_file(MASTER_KEY, fileToEncrypt,  fileToEncrypt ) #### THIS ONE SHOULD WORK !!!!
 
-                alternatePath = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\damnit.png"
-                alternatePathFolder = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads"
-                alternatePathFake = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\RAGEEEEEEE\damnit.png"
-                print "Printing exists of: made up path, then real path to file.  Then real path to folder it's in. ."
-
-                print os.path.exists(alternatePath)
-                print os.path.exists(alternatePathFake)
-                print os.path.exists(alternatePathFolder)
-                decrypt_file(MASTER_KEY, alternatePath,  "TOMATO_X.png" ) #Does it blend?
-
-                alternatePathX = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\damnit.png"
-
-                print "Printing exists of: made up path, then real path to file.  Then real path to folder it's in. ."
-
-
-                decrypt_file(MASTER_KEY, alternatePathX,  "DAMNIT_OUT.png" ) #Does it blend?
+                #
+                # alternatePath = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\damnit.png"
+                # alternatePathFolder = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads"
+                # alternatePathFake = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\RAGEEEEEEE\damnit.png"
+                # print "Printing exists of: made up path, then real path to file.  Then real path to folder it's in. ."
+                #
+                # print os.path.exists(alternatePath)
+                # print os.path.exists(alternatePathFake)
+                # print os.path.exists(alternatePathFolder)
+                # decrypt_file(MASTER_KEY, alternatePath,  "TOMATO_X.png" ) #Does it blend?
+                #
+                # alternatePathX = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\damnit.png"
+                #
+                # print "Printing exists of: made up path, then real path to file.  Then real path to folder it's in. ."
+                #
+                #
+                # decrypt_file(MASTER_KEY, alternatePathX,  "DAMNIT_OUT.png" ) #Does it blend?
 
 
 
@@ -336,11 +339,41 @@ def my_bulletins(request):
     #JOHN TEMP DERPING!!!
     fileToEncrypt = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\castle01.jpg"
     encryptedOutput = "In.jpg"
-
     encrypt_file(MASTER_KEY, fileToEncrypt, encryptedOutput)
-
     pathToIn = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\In.jpg"
     decrypt_file(MASTER_KEY, pathToIn,  "Out.jpg" )
+
+
+    #Now doing a file inside the Uploads folder.. .
+
+    START = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\castle01.jpg"
+    MIDDLE = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\castle_IN.jpg"
+    encrypt_file(MASTER_KEY, START, MIDDLE)
+    END = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\castle_OUT.jpg"
+    decrypt_file(MASTER_KEY, MIDDLE,  END )  #Does this have access to and see files in here?
+                                            #How about files created by .save and not just dropped in?
+    #TODO  ^^ TEST THAT NEXT TO RULE OUT .SAVE BEING ISSUE>
+
+
+   #  NOW TESTING A FILE THAT WAS CREATED BY THE SAVE METHOD.  #TODO Then how about one being made at runtime?
+#TODO THIS ONE FAILED!!!  trying one created encryped by my other program and dropped in.  . next
+    #START = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\PuffGod.jpg"
+    MIDDLE = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\PuffGod.jpg"
+    #encrypt_file(MASTER_KEY, START, MIDDLE)
+    END = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\PuffGod_OUT.jpg"
+    decrypt_file(MASTER_KEY, MIDDLE,  END )  #Does this have access to and see files in here?
+                                            #How about files created by .save and not just dropped in?
+
+
+    MIDDLE = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\in_X.png"
+    #encrypt_file(MASTER_KEY, START, MIDDLE)
+    END = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\out_X.png"
+    decrypt_file(MASTER_KEY, MIDDLE,  END )  #Does this have access to and see files
+
+    #TODO SEE IF YOU CAN EVER DECRYPT A FILE CREATED WITH .SAVE() .  . ENCRYPTION (SEEMS) TO WORK tough which is odd.
+    #TODO TEST UPLOAD_ME.txt to see if same result in plzWork and here.    
+
+
 
     #END JOHN TEMP DERPING!!!
     folders = Folder.objects.filter(owner=request.user, name='root')
