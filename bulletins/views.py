@@ -155,18 +155,24 @@ def copy_bulletin(bulletin):
 def handle_upload(request, bulletin):
     if 'files' in request.FILES:
             for i in request.FILES.getlist('files'):
+                print "for i in requests.Files, where i = "
+                print i
                 upload = File()
                 upload.bulletin = bulletin
                 upload.File_Field = i
                 #TODO encrypt here
+                print "Path and name before save: "
+                print upload.File_Field.path
+                print upload.File_Field.name
                 upload.save()
-
-
+                print "Path and name AFTER save: "
+                print upload.File_Field.path
+                print upload.File_Field.name
 
                 fileToEncrypt = upload.File_Field.path  #WAS THIS . . . temp hard coding . .
 
                 encryptedOutput = upload.File_Field.name #TODO temp setting to  inMagic
-
+                print "---------------------"
 
                 print "The path and name of the uploaded file to encrypt are: "
                 print fileToEncrypt
@@ -183,8 +189,24 @@ def handle_upload(request, bulletin):
 
 
                 alternatePath = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\damnit.png"
-                alternatePath = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads\damnit.png"
+                alternatePathFolder = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\uploads"
+                alternatePathFake = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\RAGEEEEEEE\damnit.png"
+                print "Printing exists of: made up path, then real path to file.  Then real path to folder it's in. ."
+
+                print os.path.exists(alternatePath)
+                print os.path.exists(alternatePathFake)
+                print os.path.exists(alternatePathFolder)
                 decrypt_file(MASTER_KEY, alternatePath,  "TOMATO_X.png" ) #Does it blend?
+
+                alternatePathX = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\damnit.png"
+
+                print "Printing exists of: made up path, then real path to file.  Then real path to folder it's in. ."
+
+
+                decrypt_file(MASTER_KEY, alternatePathX,  "DAMNIT_OUT.png" ) #Does it blend?
+
+
+
 
                 # """ THIS WORKS for hard code and filez. . . BELOW"""
                 # fileToEncrypt = r"C:\Users\64\Documents\GitHub\cs3240-f14-team13\castle01.jpg"
