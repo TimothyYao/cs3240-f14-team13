@@ -646,9 +646,13 @@ def edit_bulletin(request, bulletin_id):
                 print 'deleting file!!!'
                 for permission in doc.permissions:
                     permission.delete()
-
+                pathToDelete = doc.File_Field.path
                 #TODO delete from hard disk!!
                 doc.delete()
+                os.remove(pathToDelete)  # But how will this mesh with the 'copy' folder and file methods?.. Probably not.
+
+                #TODO delete the file in that document!
+
 
 
         handle_upload(request, bulletin)
@@ -658,3 +662,12 @@ def edit_bulletin(request, bulletin_id):
         'bulletin': bulletin,
         'docs': docs
     })
+
+
+
+"""  After delete DB, syncdb, django console,
+from django.contrib.auth.models import User
+User.objects.create_superuser(username='John', password='admin', email='jls9fc@virginia.edu')
+To fix python superuser not creating.
+
+"""

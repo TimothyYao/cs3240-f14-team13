@@ -1,11 +1,48 @@
 <html>
 <head>
     <title>Secure Witness</title>
+
 </head>
+
+<style>
+body {
+    background: url(http://www.gmarwaha.com/blog/wp-content/themes/bliss/assets/img/bg.jpg);
+   background-size: 100% 100%;
+    background-repeat: no-repeat;
+
+
+
+border-left: 2px solid #666;
+border-right: 2px solid #666;
+width: 676px;
+    height: 100%;
+margin: 0 auto;
+
+
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
 <body>
+
+
+
+
+
     <div id="content">
         <div id="header">
-            <div id="site-logo">Secure Witness</div>
+            <div id="site-logo"></div>
+         <img style="margin:0px auto;display:block"  src="http://plato.cs.virginia.edu/~jls9fc/SecureWitnessLogos/Logo4.png">
             {% if user.is_authenticated %}
                 <div id="user-info">logged in as {{ user.username }} | <a href = "/">home</a> | <a href = "/search/">search</a> | <a href="/logout/">logout</a> | <a href="/myBulletins/">myBulletins</a></div>
             {% else %}
