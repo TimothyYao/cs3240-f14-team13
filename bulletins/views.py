@@ -193,12 +193,12 @@ def handle_upload(request, bulletin):
 
 #---------------------------------now testing decrypt and replace!------------
 
-                decrypt_file(MASTER_KEY, fileToEncrypt, "tempFile")
-                os.remove(fileToEncrypt)
-                shutil.copyfile("tempFile", fileToEncrypt)  #copy then rename . . .
-                os.remove("tempFile")
-
-            #TODO THEN TEST DECRYPTING< with thesame copy and replace technique.
+            #     decrypt_file(MASTER_KEY, fileToEncrypt, "tempFile")
+            #     os.remove(fileToEncrypt)
+            #     shutil.copyfile("tempFile", fileToEncrypt)  #copy then rename . . .
+            #     os.remove("tempFile")
+            #
+            # #TODO THEN TEST DECRYPTING< with thesame copy and replace technique.
 #------------------------------end decrypt and replace.  -------------------------
 
 
@@ -574,12 +574,19 @@ def edit_bulletin(request, bulletin_id):
                 print "POST WAS TRUE"
 
                 # #TODO if file is not encrypted, then ENCRYPT.
-                # if doc.Is_Encrypted == True:
-                #     encrypt_file()
+                if doc.Is_Encrypted == False:
 
-                # fileToEncrypt = doc.File_Field.path
-                # encryptedOutput = doc.File_Field.name
-                # encrypt_file(key, fileToEncrypt, encryptedOutput)
+
+                    fileToEncrypt = doc.File_Field.path
+                    encryptedOutput = doc.File_Field.name
+                    encrypt_file(MASTER_KEY, fileToEncrypt, "tempFile")
+                    os.remove(fileToEncrypt)
+                    shutil.copyfile("tempFile", fileToEncrypt)  #copy then rename . . .
+                    os.remove("tempFile")
+                    #Now update the database object's encrypted flag
+                    encryptObject = File.objects.get(pk=doc.pk)
+                    encryptObject.Is_Encrypted = encrypted
+                    encryptObject.save()  #TODO move this inside ifs or leave?
 
             else:
                 encrypted = False  #Then decrypt if it's not already*
@@ -595,13 +602,23 @@ def edit_bulletin(request, bulletin_id):
                     print "file to decrypt's name is . . ."
                     print decryptedOutput
                     #####decrypt_file(MASTER_KEY,fileToDecrypt,  decryptedOutput )
-                    decrypt_file(MASTER_KEY, fileToDecrypt,  "MAGICK.png" )
+                    #decrypt_file(MASTER_KEY, fileToDecrypt,  "MAGICK.png" )
+
+                    decrypt_file(MASTER_KEY, fileToDecrypt, "tempFile")
+                    os.remove(fileToDecrypt)
+                    shutil.copyfile("tempFile", fileToDecrypt)  #copy then rename . . .
+                    os.remove("tempFile")
+                    #Now update the database object's encrypted flag
+                    encryptObject = File.objects.get(pk=doc.pk)
+                    encryptObject.Is_Encrypted = encrypted
+                    encryptObject.save()  #TODO move this inside ifs or leave?
+
                     print "File should be decrypted now. . ."
 
 
-            encryptObject = File.objects.get(pk=doc.pk)
-            encryptObject.Is_Encrypted = encrypted
-            encryptObject.save()  #TODO move this inside ifs or leave?
+            # encryptObject = File.objects.get(pk=doc.pk)
+            # encryptObject.Is_Encrypted = encrypted
+            # encryptObject.save()  #TODO move this inside ifs or leave?
             print "encrpyObject.save has been called"
 
             #permission delete
